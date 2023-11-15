@@ -17,15 +17,13 @@ void showHangman(int errors) {
     }
 
     if (errors == 2) {
-        printf(" |  /|\n");
-    } else if (errors >= 3) {
-        printf(" |  /|\\ \n");
-    } else {
-        printf(" |    \n");
-    }
-
-    if (errors >= 4) {
         printf(" |   |\n");
+    } else if (errors == 3) {
+        printf(" |  /| \n");
+    
+    }
+    else if (errors >= 4) {
+        printf(" |  /|\\\n");
     } else {
         printf(" |    \n");
     }
