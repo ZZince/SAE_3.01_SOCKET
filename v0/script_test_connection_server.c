@@ -18,6 +18,6 @@ int main(){
     return 0;
 }
 //Compilation
-//gcc -o tests_connection_server script_test_connection_server.c connection_server.c connection_server.h
+//gcc -o tests_connection_server.run script_test_connection_server.c connection_server.c connection_server.h
 //Running
-//./tests_connection_server
+//./tests_connection_server.run
