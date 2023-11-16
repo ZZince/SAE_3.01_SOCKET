@@ -9,8 +9,10 @@ int main(){
 
     printf("Creating a valid socket: \n");
 
-    if (socket = socket_creation(IPPORT_USERRESERVED, 2) > 0){
-        printf("Socket correctly created\n");
+    if ((socket = socket_creation(IPPORT_USERRESERVED, 2)) > 0){
+        printf("Socket correctly created : %d\n", socket);
+        printf("Waiting for client acceptation: ... (CTRL + C to quit)\n");
+        client_acceptation(socket);
     }
 
     printf("End of tests");

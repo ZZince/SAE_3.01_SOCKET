@@ -18,22 +18,20 @@ int socket_creation(const int port, const int max_connection) {
     int listen_socket;
     struct sockaddr_in addr_inLocal;
 
-    if (listen_socket = socket(AF_INET, SOCK_STREAM, 0) < 0) {
+    if ((listen_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("Error during socket creation: ");
         return -1;
     }
 
-    printf("%d\n", listen_socket);
 	memset(&addr_inLocal, 0x00, sizeof(struct sockaddr_in));
     addr_inLocal.sin_family = AF_INET;
     addr_inLocal.sin_addr.s_addr = htonl(INADDR_ANY); 
     addr_inLocal.sin_port = htons(port);
 
-    //if (bind(listen_socket, (struct sockaddr *)&addr_inLocal, sizeof(struct sockaddr_in)) < 0) {
-    //    perror("Error during socket binding: ");
-    //    return -2;
-    //}
-    printf("%d\n", bind(listen_socket, (struct sockaddr *)&addr_inLocal, sizeof(struct sockaddr_in)));
+    if (bind(listen_socket, (struct sockaddr *)&addr_inLocal, sizeof(struct sockaddr_in)) < 0) {
+        perror("Error during socket binding: ");
+        return -2;
+    }
 
     if (listen(listen_socket, max_connection) < 0) {
         perror("Error during socket listening: ");
