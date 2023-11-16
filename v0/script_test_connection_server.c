@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "connection_server.h"
 #include <arpa/inet.h>
+#include "connection_server.h"
 
 /*Some tests of connection_server.c functions*/
 int main(){
@@ -19,7 +19,9 @@ int main(){
 
     return 0;
 }
-//Compilation
-//gcc -o tests_connection_server.run script_test_connection_server.c connection_server.c connection_server.h
-//Running
-//./tests_connection_server.run
+/*
+Compilation
+    gcc -o tests_connection_server.run script_test_connection_server.c server_functions/src/connection_server.c -I server_functions
+Running
+    ./tests_connection_server.run
+*/

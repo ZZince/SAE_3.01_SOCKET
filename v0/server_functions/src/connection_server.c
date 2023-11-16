@@ -12,7 +12,7 @@
         - [int] port (const): Port used for listening
         - [int] max_connection (const): Number of max connection possible to the server
     Return:
-        - [int] Socket listened/binded
+        - [int] Socket binded/listened
 */
 int socket_creation(const int port, const int max_connection) {
     int listen_socket;
