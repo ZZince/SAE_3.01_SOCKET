@@ -6,7 +6,7 @@
 #include <arpa/inet.h> 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string.h> // memset()
 
 
 /*Create a communication socket
