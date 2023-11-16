@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
 
 		// c’est un appel bloquant
 		if ((socketDialogue = accept(socketEcoute, (struct sockaddr *)&addr_inDistant, &longueurAdresse)) < 0) {
-			  close(socketDialogue);
+			close(socketDialogue);
    			close(socketEcoute);
    			exit(-4);
 		}

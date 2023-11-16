@@ -55,7 +55,7 @@ int main(int argc, char *argv[]){
 	inet_aton(ip_dest, &sockaddrDistant.sin_addr);
 
 	// Débute la connexion vers le processus serveur distant
-	if((connect(descripteurSocket, (struct sockaddr *)&sockaddrDistant,longueurAdresse)) == -1){
+	if((connect(descripteurSocket, (struct sockaddr *)&sockaddrDistant, longueurAdresse)) == -1){
 		perror("Erreur de connection avec le serveur distant...");
 		close(descripteurSocket);
 		exit(-2); // On sort en indiquant un code erreur
