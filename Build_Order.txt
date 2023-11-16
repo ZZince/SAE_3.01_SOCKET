@@ -1,0 +1,28 @@
+V0:
+-le client se connecte au serveur
+-le client attend le message "start x" du serveur. X etant le nombre de lettres dans le mot
+-le serveur envoie le message "start x", x le nombre de lettre
+-le client affiche le mot (avec X tirets)
+-le serveur attend le message indiquant la lettre du client et met à jour les donner de la partie
+-le client choisit une lettre et l'envoie
+-le client attend la reponse du serveur
+-le serveur repond au client et lui indique si la lettre fait partie du mot, si la lettre a deja ete choisie,
+si la partie est gagné ou perdu
+-boucle des precedentes fonctions
+!!! Une seule connexion: quand la partie est terminée le serveur passe en attente de connexion !!! 
+
+v1:
+-fork du serveur
+-connexion du client1 au serveur
+-le serveur le connecte et fait attendre le client1 (wait)
+-fork du serveur
+-connexion du client2 au serveur
+-le serveur envoie le mot à faire deviner (en tirets)
+-les client 1 attend
+-le serveur fait jouer le deuxieme client
+-le client 2 attend
+-le serveur fait jouer le premier client
+-le serveur alterne entre les deux joueurs
+-quand un des joueurs à gagner le jeu s'arrete
+-le serveur envoie un message aux 2 client en indiquant la victoire de l'un
+!!! Une seule connexion: quand la partie est terminée le serveur passe en attente de connexion !!! 
