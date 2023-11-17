@@ -26,3 +26,24 @@ v1:
 -quand un des joueurs à gagner le jeu s'arrete
 -le serveur envoie un message aux 2 client en indiquant la victoire de l'un
 !!! Une seule connexion: quand la partie est terminée le serveur passe en attente de connexion !!! 
+
+v2:
+-connexion du client1 au serveur
+-le serveur connecte le client1
+-le client1 donne le mot à faire deviner
+-le client2 se connecte au serveur
+-le serveur commence à faire jouer le client2
+-le client 2 joue une fois 
+-le serveur transmet les infos de la partie au client1
+-le serveur continue à faire jouer le client2 et repete les actions precedentes
+!!! Une seule connexion: quand la partie est terminée le serveur passe en attente de connexion !!! 
+
+v3:
+!!! Pareil que 2 mais plusieurs parties en meme temps !!! 
+-en attente de connexion tout le temps pour lancer d'autres parties
+-gere les communications entre les differents clients des parties
+
+v4:
+!!! Pareil que 2 mais plusieurs parties en meme temps !!! 
+-en attente de connexion tout le temps pour lancer d'autres parties
+-le serveur ne gere pas les communications, il connecte les clients entre eux et les laissent faire leur partie
