@@ -23,10 +23,10 @@
 #include <arpa/inet.h> // htons() and inet_aton() 
 
 // External functions
-#include "client_functions/connexion_client.h"
+#include "client_functions/client_functions.h"
 
 // Constant
-#define LG_MESSAGE 256 // = Maximal lenght of the messages
+#define MESSAGE_LEN 10 // = Maximal lenght of the messages
 
 int main(int argc, char *argv[]){
 
@@ -34,11 +34,15 @@ int main(int argc, char *argv[]){
 	struct sockaddr_in sockaddrDistant;
 	socklen_t longueurAdresse;
 
-	char buffer[LG_MESSAGE];
+	char buffer[MESSAGE_LEN];
 	int nb; /* number of bytes read and written */
 
 	char ip_dest[16];
 	int  port_dest;
+
+	// Game attributes
+	char letter; // The character to send to the server
+	int send; // Verify if the message is correctly send
 
 	// Get the ip and the port of the server the client want to connect
     if (argc>1) {
@@ -79,7 +83,10 @@ int main(int argc, char *argv[]){
 
 	printf("Connexion au serveur %s:%d réussie!\n",ip_dest,port_dest);
 
-	
+	letter = select_letter();
+
+	// TODO : Faire fonctionner le send_message
+	send = send_message_to_server(socket, letter, MESSAGE_LEN);
 
 	// Close the socket and leave
 	close(socket);
@@ -88,6 +95,6 @@ int main(int argc, char *argv[]){
 
 
 // Compilation
-// gcc -o client PN_client_v0.c client_functions/src/connexion_client.c
+// gcc -o client PN_client_v0.c client_functions/src/connexion_client.c client_functions/src/character_selection.c client_functions/src/send_message.c
 // Execution
 // ./client
