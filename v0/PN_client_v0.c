@@ -86,7 +86,7 @@ int main(int argc, char *argv[]){
 	letter = select_letter();
 
 	// TODO : Faire fonctionner le send_message
-	send = send_message_to_server(socket, letter, MESSAGE_LEN);
+	send = send_character_to_server(socket, letter, MESSAGE_LEN);
 
 	// Close the socket and leave
 	close(socket);

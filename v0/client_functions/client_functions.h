@@ -8,4 +8,4 @@ char select_letter();
 bool is_letter(char character);
 
 // send_message.c
-int send_message_to_server(int socket, char character, int size);
+int send_character_to_server(int socket, char character, int size);

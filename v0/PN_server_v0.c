@@ -65,6 +65,12 @@ int main(int argc, char *argv[]){
 					return 0;
 			default:  /* réception de n octets */
 					printf("Message reçu : %s (%d octets)\n\n", messageRecu, nb);
+
+					printf("Message formé : ");
+					for (int i = 0; i < 10; ++i) {
+						printf("%d ", messageRecu[i]); // Affichage décimal
+					}
+					printf("\n");
 		}
 
 		// Ecriture du message à envoyer au client

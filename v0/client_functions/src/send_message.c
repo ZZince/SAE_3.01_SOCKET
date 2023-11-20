@@ -23,34 +23,45 @@
 #include <arpa/inet.h> // htons() and inet_aton() 
 
 
+// Constants
+#define CODE_LETTER_RECEIVED 202 // Send letter validation code
+
+
 // Depedencies
 #include "../client_functions.h"
 
 ////////////////////////////// FUNCTIONS ////////////////////////////////////////////////
 
 
-int send_message_to_server(int socket, char character, int size) {
+int send_character_to_server(int socket, char character, int size) {
+    unsigned char message[size]; // set in unsigned to allow values bigger than 127 in a bytes
+    int nb;
 
-    char message[size];
-	int nb;
+    memset(message, 0x00, size); // Initialize message
 
-    memset(message, 0x00, size);
+    message[0] = CODE_LETTER_RECEIVED; // 202
+    message[1] = character;
 
-	message[0] = character;
+	// Show message in decimal  ////////////////////
+    //printf("Message formé : ");
+    //for (int i = 0; i < size; ++i) {
+    //    printf("%d ", message[i]);
+    //}
+    //printf("\n");
 
-    printf("%s\n", message);
 
-	switch(nb = write(socket, message, size)){
-		case -1 : /* une erreur ! */
+	// Try sending the message
+    switch(nb = write(socket, message, size)){
+		case -1 : 
 			perror("Erreur en écriture...");
-			close(socket);
-			return -1;
-		case 0 : /* la socket est fermée */
+			close(socket); 
+			return -1; // ERROR
+		case 0 : // Socket is closed
 			fprintf(stderr, "La socket a été fermée par le serveur !\n\n");
 			return 0;
-		default: /* envoi de n octets */
-			printf("Message %s envoyé! (%d octets)\n\n", message, nb);
+		default: // message send successfuly
+			printf("Lettre %c envoyée! (%d octets)\n\n", character, nb);
 	}
 
-	return 0;
+    return 0;
 }
