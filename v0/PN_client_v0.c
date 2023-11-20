@@ -27,6 +27,7 @@
 
 // Constant
 #define MESSAGE_LEN 10 // = Maximal lenght of the messages
+#define MAX_WORD_SIZE 256 // = Maximal lenght of the word
 
 int main(int argc, char *argv[]){
 
@@ -34,7 +35,7 @@ int main(int argc, char *argv[]){
 	struct sockaddr_in sockaddrDistant;
 	socklen_t longueurAdresse;
 
-	char buffer[MESSAGE_LEN];
+	unsigned char buffer[MESSAGE_LEN];
 	int nb; /* number of bytes read and written */
 
 	char ip_dest[16];
@@ -43,6 +44,10 @@ int main(int argc, char *argv[]){
 	// Game attributes
 	char letter; // The character to send to the server
 	int send; // Verify if the message is correctly send
+	unsigned char *received_message; // Variable that stores the server message
+	char word[MAX_WORD_SIZE]; // The word the client have to find
+
+	memset(word, 0x00, MAX_WORD_SIZE); // Initialize the word
 
 	// Get the ip and the port of the server the client want to connect
     if (argc>1) {
@@ -83,10 +88,29 @@ int main(int argc, char *argv[]){
 
 	printf("Connexion au serveur %s:%d réussie!\n",ip_dest,port_dest);
 
+	// Choose a letter
 	letter = select_letter();
 
-	// TODO : Faire fonctionner le send_message
-	send = send_character_to_server(socket, letter, MESSAGE_LEN);
+	// Send the letter to the server
+	if (send = send_character_to_server(socket, letter, MESSAGE_LEN) == -1) {
+		perror("Envoi du message impossible");
+	}
+
+	// Get a message from the server
+	received_message = get_message_from_server(socket, MESSAGE_LEN);
+	if (received_message == NULL) {
+        perror("Erreur lors de la réception du message");
+        exit(-1); // ERROR
+    } else {
+        // Copy into buffer
+        strcpy(buffer, received_message);
+    }
+
+	// Translate the message that the server send
+	translate_message(buffer, word);
+
+	// Free memory allocated
+	free(received_message);
 
 	// Close the socket and leave
 	close(socket);
@@ -95,6 +119,6 @@ int main(int argc, char *argv[]){
 
 
 // Compilation
-// gcc -o client PN_client_v0.c client_functions/src/connexion_client.c client_functions/src/character_selection.c client_functions/src/send_message.c
+// gcc -o client PN_client_v0.c client_functions/src/connexion_client.c client_functions/src/character_selection.c client_functions/src/message_client.c client_functions/src/game_client.c
 // Execution
 // ./client

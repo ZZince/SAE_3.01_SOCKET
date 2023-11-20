@@ -20,7 +20,7 @@ int main(int argc, char *argv[]){
     int socketDialogue;
 	struct sockaddr_in addr_inDistant;
 	char messageEnvoi[LG_MESSAGE]; /* le message de la couche Application ! */
-	char messageRecu[LG_MESSAGE]; /* le message de la couche Application ! */
+	unsigned char messageRecu[LG_MESSAGE]; /* le message de la couche Application ! */
 	int  nb; /* nb d’octets ecrits et lus */
 
     // Crée un socket de communication
@@ -74,7 +74,9 @@ int main(int argc, char *argv[]){
 		}
 
 		// Ecriture du message à envoyer au client
-		sprintf(messageEnvoi, "Hello client! Veux-tu jouer au pendu avec moi ?\n");
+		memset(messageEnvoi, 0x00, 10);
+		messageEnvoi[0] = 201;
+		messageEnvoi[1] = 6;
 
 		// On envoie les données vers le client
 		nb = write(socketDialogue, messageEnvoi, strlen(messageEnvoi));
