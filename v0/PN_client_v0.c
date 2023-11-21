@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+# include <ctype.h>   // get isDigit()
 #include <string.h>	// memset()
 #include <netinet/in.h>	// struct sockaddr_in
 #include <arpa/inet.h> // htons() and inet_aton() 
@@ -46,6 +47,9 @@ int main(int argc, char *argv[]){
 	int send; // Verify if the message is correctly send
 	unsigned char *received_message; // Variable that stores the server message
 	char word[MAX_WORD_SIZE]; // The word the client have to find
+	bool word_not_found = true; // Check if the word is found or not (victory condition)
+	char choice; // Choice of the client between send character or send word
+	char *client_word; // The word the client choosed
 	
 	memset(buffer, 0x00, MESSAGE_LEN); // Initialize the buffer
 	memset(word, 0x00, MAX_WORD_SIZE); // Initialize the word
@@ -89,38 +93,69 @@ int main(int argc, char *argv[]){
 
 	printf("Connexion au serveur %s:%d réussie!\n",ip_dest,port_dest);
 
-	// Choose a letter
-	letter = select_letter();
+	// Game Loop
+	while(word_not_found){
 
-	// Send the letter to the server
-	if (send = send_character_to_server(socket, letter, MESSAGE_LEN) == -1) {
-		perror("Envoi du message impossible");
+		choice = 'o';
+
+		// Ask client what his action
+		ask:
+			printf("1: Send a letter\n2: Send the word\n");
+			scanf("%c", &choice);
+			if (choice != 49 && choice != 50)
+				goto ask;
+
+		switch(choice) {
+			case '1':
+				// Choose a letter
+				letter = select_letter();
+
+				// Send the letter to the server
+				if (send = send_character_to_server(socket, letter, MESSAGE_LEN) == -1) {
+					perror("Envoi du message impossible");
+				}
+				break;
+			
+			case '2':
+				// Choose the word
+				client_word = select_word();
+
+				// Send the word to the server
+				if (send = send_word_to_server(socket, client_word, MESSAGE_LEN) == -1) {
+					perror("Envoi du message impossible");
+				}
+				break;
+		}
+
+
+		// Get a message from the server
+		received_message = get_message_from_server(socket, MESSAGE_LEN);
+		if (received_message == NULL) {
+			perror("Erreur lors de la réception du message");
+			exit(-1); // ERROR
+		}
+
+		// Translate the message that the server send
+		translate_message(received_message, word, letter);
+
+		memset(received_message, 0x00, MESSAGE_LEN); // refresh the message
+		printf("Milieu de parcours\n");
+
+		// Get a message from the server
+		received_message = get_message_from_server(socket, MESSAGE_LEN);
+		if (received_message == NULL) {
+			perror("Erreur lors de la réception du message");
+			exit(-1); // ERROR
+		}
+
+		// Translate the message that the server send
+		translate_message(received_message, word, letter);
+
+		printf("fin du parcours\n");
+
 	}
 
-	// Get a message from the server
-	received_message = get_message_from_server(socket, MESSAGE_LEN);
-	if (received_message == NULL) {
-        perror("Erreur lors de la réception du message");
-        exit(-1); // ERROR
-    }
-
-	// Translate the message that the server send
-	translate_message(received_message, word, letter);
-
-	memset(received_message, 0x00, MESSAGE_LEN); // refresh the message
-
-	printf("%s\n", received_message);
-
-	// Get a message from the server
-	received_message = get_message_from_server(socket, MESSAGE_LEN);
-	if (received_message == NULL) {
-        perror("Erreur lors de la réception du message");
-        exit(-1); // ERROR
-    }
-
-	// Translate the message that the server send
-	translate_message(received_message, word, letter);
-
+	
 	// Free memory allocated
 	free(received_message);
 

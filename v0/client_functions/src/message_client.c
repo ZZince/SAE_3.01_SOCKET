@@ -29,6 +29,7 @@
 #define CODE_LETTER_RECEIVED 202 // Send letter validation code
 #define LETTER_FOUND_IN_WORD 204 // A letter is found in the word validation code
 #define LETTER_NOT_FOUND_IN_WORD 205 // A letter is not found in the word validation code
+#define CODE_SEND_WORD 206 // Send word validation code
  
 
 
@@ -83,6 +84,35 @@ int send_character_to_server(int socket, char character, int size) {
 }
 
 
+int send_word_to_server(int socket, char *word, int size) {
+    unsigned char message[size]; // set in unsigned to allow values bigger than 127 in a bytes
+    int nb;
+
+    memset(message, 0x00, size); // Initialize message
+
+    message[0] = CODE_SEND_WORD;
+
+    for (int index = 1; index < size; index++) {
+        message[index] = word[index];
+    }
+
+    // Try sending the message
+    switch(nb = write(socket, message, size)){
+		case -1 : 
+			perror("Erreur en écriture...");
+			close(socket); 
+			return -1; // ERROR
+		case 0 : // Socket is closed
+			fprintf(stderr, "La socket a été fermée par le serveur !\n\n");
+			return 0;
+		default: // message send successfuly
+			printf("Mot : %s envoyée! (%d octets)\n\n", word, nb);
+	}
+
+    return 0;
+}
+
+
 /* Allow a client to get a message from the server
     Parameters:
         socket [int]:
@@ -115,9 +145,6 @@ char *get_message_from_server(int socket, int size) {
 		    message[nb]='\0';
             // Show message
             printf("Message reçu du serveur (%d octets) : ", nb);
-            for (int i = 0; i < size; ++i) {
-                printf("%d ", message[i]);
-            }
             printf("\n");
 	}
 
@@ -161,6 +188,11 @@ void translate_message(unsigned char *buffer, char *word, char character) {
             int error = buffer[index];
             error = abs(error - 6);
             show_hangman(error);
+            goto end;
+
+        default:
+            printf("Message inconnu\n");
+            goto end;
     }
     end:
 }

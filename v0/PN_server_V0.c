@@ -26,7 +26,7 @@
 #define CODE_NOT_A_LETTER 101
 #define CODE_CRITICAL_ERROR 199
 
-#define WORD "socket"
+#define WORD "SOCKET"
 
 #define ERROR_SOCKET "Error during socket creation: "
 #define ERROR_ACCEPTATION "Error during client acceptation: "
@@ -65,6 +65,8 @@ int main(int argc, int *argv){
                 perror("Error during creating main socket_listen: ");
                 _Exit(EXIT_FAILURE);
             }
+
+    printf("Server is On...\n");
     
 
     while (1){
