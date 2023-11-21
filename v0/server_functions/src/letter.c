@@ -1,5 +1,8 @@
 #include "../letter.h"
 #include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 
 /*Return i+1 if the letter in found in word, 0 else
     Parameters:
@@ -37,7 +40,7 @@ int all_letters_in_word(char* word, char* buffer){
 }
 /*Test if the char is a valid letter and return it in capital
     Parameters:
-        -[char] letter: simple char
+        - [char] letter: simple char
     Return:
         - [unsigned char]: 0 if the char isn't a latin letter, capital letter ASCII code else
 */
@@ -51,4 +54,29 @@ unsigned char upper_letter(char letter){
     else{
         return 0;
     }
+}
+
+/*Look if the letter is in the word. If yes, returns all the position of the letter in the word
+    Parameters:
+        - [char*] word: Pointer to the word
+        - [char] letter: simple char
+    Return:
+        - [int] list_letter: all the position of the letter in int
+
+*/
+int* position_letter(char* word, char letter){
+    int nb_letter = strlen(word);
+    int list_letter[nb_letter];
+    int j=0;
+    memset(list_letter,0,strlen(nb_letter));
+
+    if (letter_in_word(word, letter)){
+        for(int i=0; i < strlen(word); i++){
+            if(word[i] == letter){
+                list_letter[j] = letter;
+                j++;
+            }
+        }
+    }
+    return list_letter;
 }
