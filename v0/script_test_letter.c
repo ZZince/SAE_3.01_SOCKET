@@ -10,7 +10,10 @@ int main(){
     char letter = 'i';
     char capital_letter = 'Z';
     int nb_letters_return;
+    char buffer[10];
+    int* positions;
 
+    memset(buffer, 0, strlen(buffer));
     memset(all_letters, 0, strlen(wrong_word));
 
     printf("Tests for letter.c:\n");
@@ -26,7 +29,19 @@ int main(){
 
     printf("Test for upper_letter: capital letter (Z)\n: %c", upper_letter(capital_letter));
     printf("Test for upper_letter: letter (i): %c\n", upper_letter(letter));
-    printf("Test for upper_letter ({): %c\n", upper_letter(173));
+    printf("Test for upper_letter: ({): %c\n", upper_letter(173));
+
+
+    extract_word(buffer, "\0test\0\0");
+    buffer[4] = '\0';
+    printf("Test for extract_word (test): %s", buffer);
+
+    positions = position_letter(wrong_word, 'o');
+
+    //printf("Test for position_letter: %s", wrong_word);
+    //    for (int i = 0; i<= strlen(positions); i++){
+    //        printf("\t -%d", positions[i]);
+    //    }
 
     return 0;
 }

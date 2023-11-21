@@ -16,8 +16,11 @@
 #define CODE_LETTER_ALREADY_SENT 203
 #define CODE_LETTER_FOUND_IN_WORD 204
 #define CODE_LETTER_NOT_IN_WORD 205
-#define CODE_NOT_A_LETTER 101
+#define CODE_CLIENT_SENT_A_WORD 206
+#define CODE_CLIENT_FOUND_WORD 207
+#define CODE_CLIENT_NOT_FOUND_WORD 208
 
+#define CODE_NOT_A_LETTER 101
 #define CODE_CRITICAL_ERROR 199
 
 #define WORD "socket"
@@ -29,12 +32,14 @@
 #define ERROR_CLOSING_CLIENT_SOCKET "Error during closing client socket: "
 
 int main(int argc, int *argv){
-    unsigned char error_message[ERROR_LEN], 
+    unsigned char error_message[ERROR_LEN],  //Message sent if a critical error happened
                   client_message[MESSAGE_LEN], //Message sent by client
                   server_message[MESSAGE_LEN], //Message will be send by server
                   all_letters_in_word[strlen(WORD)], //All unique letters in researched words
                   all_letters_tried[NB_LETTERS_ALPHA], //All letters tried by client
+                  word_received[strlen(WORD)], //Word sent by the client
                   letter_received; //Simple unsigned char
+
 
     int socket_listen, socket_client;
     int port = IPPORT_RESERVED;
@@ -137,14 +142,41 @@ int main(int argc, int *argv){
                     }
                     
                     break;
+
+                case CODE_CLIENT_SENT_A_WORD:
+                    extract_word(word_received, client_message);
+                    if (strcmp(word_received, WORD) == 0){ // Client sent the client
+                        server_message[0] = CODE_CLIENT_FOUND_WORD;
+
+                        if ((send(socket_client, server_message, MESSAGE_LEN, 0)) <= 0){
+                            strcpy(error_message, ERROR_SENDING);
+                            goto error;
+                        }
+                        
+                        goto game_end;
+                        }
+
+                    else{
+                        try_error--;
+                        server_message[0] = CODE_CLIENT_NOT_FOUND_WORD;
+                        server_message[1] = try_error;
+
+                        if ((send(socket_client, server_message, MESSAGE_LEN, 0)) <= 0){
+                            strcpy(error_message, ERROR_SENDING);
+                            goto error;
+                        }
+
+                    break;
+
+
+                    }
                 
                 default:
-                    break;
+                    strcpy(error_message, ERROR_WRONG_CODE_LETTER_RECEIVED);
+                    goto error;
+                    //break;
                 }
             }
-
-
-
 
 
     error:
@@ -164,5 +196,15 @@ int main(int argc, int *argv){
         }
         memset(error_message, 0, sizeof(error_message));
         goto start_loop;
+
+    game_end:
+        if(close(socket_client) > 0){
+            printf("Client socket closed properly");
+            goto start_loop;
+        }
+        else{
+            perror("Client socket cannot be closed: ");
+            _Exit(EXIT_FAILURE);
+        }
     }
 }

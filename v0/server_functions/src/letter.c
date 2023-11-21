@@ -80,3 +80,16 @@ int* position_letter(char* word, char letter){
     }
     return list_letter;
 }
+
+/*Extract the word throught of the code sent by the client WHITHOUT \0 at the end
+    Parameters:
+        - [char*] buffer: Buffer for the extracted word
+        - [char*] string: String with the code and the word sent by the client
+*/
+void extract_word(char* buffer, char* string){
+    int i = 1;
+    while (string[i] != 0){
+        buffer[i-1] = string[i];
+        i++;
+    }
+}
