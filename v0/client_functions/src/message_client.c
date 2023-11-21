@@ -30,6 +30,10 @@
 #define LETTER_FOUND_IN_WORD 204 // A letter is found in the word validation code
 #define LETTER_NOT_FOUND_IN_WORD 205 // A letter is not found in the word validation code
 #define CODE_SEND_WORD 206 // Send word validation code
+#define CODE_WORD_FOUND 207 // Word find validation code
+#define CODE_WORD_NOT_FOUND 208 // Word not find validation code
+#define CODE_PLAYER_LOST 209 // Player loose the game validation code
+#define CODE_PLAYER_WON 2010 // Player win the game (he get all letters)
  
 
 
@@ -92,8 +96,8 @@ int send_word_to_server(int socket, char *word, int size) {
 
     message[0] = CODE_SEND_WORD;
 
-    for (int index = 1; index < size; index++) {
-        message[index] = word[index];
+    for (int index = 0; index < size; index++) {
+        message[index + 1] = word[index];
     }
 
     // Try sending the message
@@ -160,11 +164,12 @@ char *get_message_from_server(int socket, int size) {
         *buffer [unsigned char]: the message from the server
         *word [char]: the word the client have to find
 */
-void translate_message(unsigned char *buffer, char *word, char character) {
+int translate_message(unsigned char *buffer, char *word, char character) {
     static bool firstTime = true;
     int index = 0;
     int code = buffer[index];
     int value;
+    int error;
 
     loop:
     switch(code){
@@ -182,20 +187,39 @@ void translate_message(unsigned char *buffer, char *word, char character) {
                 index++; 
                 goto loop; // Then loop again
 
-        case LETTER_FOUND_IN_WORD:
+        case LETTER_FOUND_IN_WORD:  // Letter food, be add it in the word to show it in the cmd
             character_is_good(buffer, word, character);
             goto end;
 
-        case LETTER_NOT_FOUND_IN_WORD:
-            index = 1;
-            int error = buffer[index];
+        case LETTER_NOT_FOUND_IN_WORD:  // Letter not find so we show the hangman
+            error = buffer[1];
             error = abs(error - 6);
             show_hangman(error);
             goto end;
+
+        case CODE_WORD_FOUND: // Player find the word and win the game
+            printf("Vous avez trouvé le bon mot\n");
+            return 1;
+
+        case CODE_WORD_NOT_FOUND: // Player find the wrong word, show the hangman
+            printf("Le mot est incorrect\n");
+            error = buffer[1];
+            error = abs(error - 6);
+            show_hangman(error);
+            goto end;
+
+        case CODE_PLAYER_LOST: // Player reach the maximum error (6 errors)
+            printf("Vous avez atteint le nombre maximum d'erreur\n");
+            return 3;
+
+        case CODE_PLAYER_WON: // Player won the game (he gess all the letters)
+            printf("Vous avez trouvé le bon mot\n");
+            return 2;
 
         default:
             printf("Message inconnu\n");
             goto end;
     }
     end:
+    return 0;
 }

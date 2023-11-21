@@ -109,7 +109,7 @@ int main(int argc, int *argv){
 
                 switch (client_message[0]){
 
-                case CODE_LETTER_RECEIVED: //Client is sending a letter
+                case CODE_LETTER_RECEIVED: //Client is sending a letterx
                     //Letter verification
                     if ((letter_received = upper_letter(client_message[1])) == 0){
                         server_message[0] = CODE_NOT_A_LETTER;

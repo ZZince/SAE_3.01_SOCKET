@@ -15,7 +15,7 @@ char *select_word();
 int send_character_to_server(int socket, char character, int size);
 int send_word_to_server(int socket, char *word, int size);
 char *get_message_from_server(int socket, int size);
-void translate_message(unsigned char *buffer, char *word, char character);
+int translate_message(unsigned char *buffer, char *word, char character);
 
 // game_client.c
 int set_word_lenght(int number_of_letter, char *word);
