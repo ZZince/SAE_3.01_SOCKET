@@ -13,6 +13,9 @@ int main(){
     char buffer[10];
     int* positions;
     int bufferint[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    char* only_zero = "\0\0\0";
+    char* not_only_zero = "0i0d";
+
     memset(buffer, 0, strlen(buffer));
     memset(all_letters, 0, strlen(wrong_word));
 
@@ -34,9 +37,8 @@ int main(){
 
     extract_word(buffer, "\0test\0\0");
     buffer[4] = '\0';
-    printf("Test for extract_word (test): %s", buffer);
+    printf("Test for extract_word (test): %s\n", buffer);
 
-    //memset(bufferint,0,40);
     position_letter(wrong_word,bufferint, 'o');
 
 
@@ -45,7 +47,9 @@ int main(){
             printf("\t %d", bufferint[i]);
         }
 
-    return 0;
+    printf("\n");
+    printf("Test for verif_only_zero: %d\n", verif_only_zero(only_zero));
+    printf("Test for verif_only_zero: %d\n", verif_only_zero(not_only_zero));
 }
 /*
 Compilation

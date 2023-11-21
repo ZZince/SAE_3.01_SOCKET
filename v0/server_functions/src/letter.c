@@ -89,3 +89,13 @@ void extract_word(char* buffer, char* string){
         i++;
     }
 }
+
+int verif_only_zero(char* buffer){
+    for (int i = 0; i <= strlen(buffer); i++){
+        if (buffer[i] != 0){
+            return 0;
+        }
+    }
+
+    return 1;
+}
