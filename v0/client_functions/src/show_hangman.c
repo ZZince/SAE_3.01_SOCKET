@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 // Function to display the hangman based on the number of errors
-void showHangman(int errors) {
+void show_hangman(int errors) {
     
     // Check if the number of errors is outside the valid range
     if (errors < 0 || errors > 6) {
@@ -44,12 +44,4 @@ void showHangman(int errors) {
 
     // Display the base of the hangman
     printf(" |_____\n");
-}
-
-int main() {
-    int errors = 6; 
-
-    showHangman(errors);
-
-    return 0;
 }

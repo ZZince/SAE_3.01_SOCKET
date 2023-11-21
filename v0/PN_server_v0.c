@@ -9,7 +9,7 @@
 
 #define PORT IPPORT_USERRESERVED // = 5000
 
-#define LG_MESSAGE 256 // = Taille maximale des messages de la couche Application
+#define LG_MESSAGE 10 // = Taille maximale des messages de la couche Application
 
 int main(int argc, char *argv[]){
     int socketEcoute;
@@ -74,12 +74,34 @@ int main(int argc, char *argv[]){
 		}
 
 		// Ecriture du message à envoyer au client
-		memset(messageEnvoi, 0x00, 10);
+		memset(messageEnvoi, 0x00, LG_MESSAGE);
 		messageEnvoi[0] = 201;
 		messageEnvoi[1] = 6;
 
 		// On envoie les données vers le client
-		nb = write(socketDialogue, messageEnvoi, strlen(messageEnvoi));
+		nb = write(socketDialogue, messageEnvoi, LG_MESSAGE);
+		switch(nb){
+			case -1 : /* une erreur ! */
+				perror("write");
+				close(socketDialogue);
+				exit(-6);
+			case 0 :  /* la socket est fermée */
+				fprintf(stderr, "La socket a été fermée par le client !\n\n");
+				close(socketDialogue);
+				return 0;
+			default:  /* envoi de n octets */
+				printf("Message %s envoyé (%d octets)\n\n", messageEnvoi, nb);
+				// On ferme la socket de dialogue et on se replace en attente ...
+				
+		}
+
+		// Ecriture du message à envoyer au client
+		memset(messageEnvoi, 0x00, LG_MESSAGE);
+		messageEnvoi[0] = 205;
+		messageEnvoi[1] = 6;
+
+		// On envoie les données vers le client
+		nb = write(socketDialogue, messageEnvoi, LG_MESSAGE);
 		switch(nb){
 			case -1 : /* une erreur ! */
 				perror("write");
@@ -94,7 +116,6 @@ int main(int argc, char *argv[]){
 				// On ferme la socket de dialogue et on se replace en attente ...
 				close(socketDialogue);
 		}
-
 	}
 
 

@@ -49,16 +49,31 @@ int set_word_lenght(int number_of_letter, char *word) {
         number_of_letter [int]: The number of letter in the word
         *word [char]: The word the player have to find
 */
-void show_word_in_cmd(int number_of_letter, char *word) {
+void show_word_in_cmd(char *word) {
     char character;
     printf("\nVotre mot :\n");
-    for (int i = 0; i < number_of_letter; i++) {
+    for (int i = 0; i < 256; i++) {
         if (!word[i]) { // When it's 0, letter is not found yet
             printf(" _");
-        } else { // Show letter
+        } else if (word[i] == -1) { // End of the word
+            goto end;
+        }
+        else { // Show letter
             character = word[i]; 
             printf(" %c", character);
         }
     }
-    printf("\n\n");
+    end:
+        printf("\n\n");
+}
+
+void character_is_good(char *buffer, char *word, char character) {
+    int index = 1;
+    int letter_position = buffer[index];
+    while(letter_position != 0) {
+        word[letter_position] = character;
+        index++;
+        letter_position = buffer[index];
+    }
+    show_word_in_cmd(word);
 }

@@ -27,6 +27,8 @@
 // Constants
 #define CODE_NUMBER_OF_LETTER 201 // Means that the server sends the number of letters in the word
 #define CODE_LETTER_RECEIVED 202 // Send letter validation code
+#define LETTER_FOUND_IN_WORD 204 // A letter is found in the word validation code
+#define LETTER_NOT_FOUND_IN_WORD 205 // A letter is not found in the word validation code
  
 
 
@@ -92,6 +94,7 @@ int send_character_to_server(int socket, char character, int size) {
 */
 char *get_message_from_server(int socket, int size) {
     unsigned char *message = (char *)malloc(size * sizeof(char)); // Allocate message memory
+    memset(message, 0x00, size);
 
     if (message == NULL) {
         perror("Allocation de mémoire impossible");
@@ -127,13 +130,12 @@ char *get_message_from_server(int socket, int size) {
         *buffer [unsigned char]: the message from the server
         *word [char]: the word the client have to find
 */
-void translate_message(unsigned char *buffer, char *word) {
+void translate_message(unsigned char *buffer, char *word, char character) {
     static bool firstTime = true;
     int index = 0;
     int code = buffer[index];
     int value;
 
-    printf("%d\n", code);
     loop:
     switch(code){
         case CODE_NUMBER_OF_LETTER: // Number of letter in the word
@@ -144,11 +146,21 @@ void translate_message(unsigned char *buffer, char *word) {
                     set_word_lenght(buffer[index], word); // Reallocate word's memory
                     firstTime = false;
                 }   
-                show_word_in_cmd(buffer[index], word); // Show message in the cmd with the number of letter (index)
+                show_word_in_cmd(word); // Show message in the cmd with the number of letter (index)
                 goto end; // Then go to end
             } else
                 index++; 
                 goto loop; // Then loop again
+
+        case LETTER_FOUND_IN_WORD:
+            character_is_good(buffer, word, character);
+            goto end;
+
+        case LETTER_NOT_FOUND_IN_WORD:
+            index = 1;
+            int error = buffer[index];
+            error = abs(error - 6);
+            show_hangman(error);
     }
     end:
 }

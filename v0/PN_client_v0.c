@@ -46,7 +46,8 @@ int main(int argc, char *argv[]){
 	int send; // Verify if the message is correctly send
 	unsigned char *received_message; // Variable that stores the server message
 	char word[MAX_WORD_SIZE]; // The word the client have to find
-
+	
+	memset(buffer, 0x00, MESSAGE_LEN); // Initialize the buffer
 	memset(word, 0x00, MAX_WORD_SIZE); // Initialize the word
 
 	// Get the ip and the port of the server the client want to connect
@@ -101,13 +102,24 @@ int main(int argc, char *argv[]){
 	if (received_message == NULL) {
         perror("Erreur lors de la réception du message");
         exit(-1); // ERROR
-    } else {
-        // Copy into buffer
-        strcpy(buffer, received_message);
     }
 
 	// Translate the message that the server send
-	translate_message(buffer, word);
+	translate_message(received_message, word, letter);
+
+	memset(received_message, 0x00, MESSAGE_LEN); // refresh the message
+
+	printf("%s\n", received_message);
+
+	// Get a message from the server
+	received_message = get_message_from_server(socket, MESSAGE_LEN);
+	if (received_message == NULL) {
+        perror("Erreur lors de la réception du message");
+        exit(-1); // ERROR
+    }
+
+	// Translate the message that the server send
+	translate_message(received_message, word, letter);
 
 	// Free memory allocated
 	free(received_message);
@@ -119,6 +131,6 @@ int main(int argc, char *argv[]){
 
 
 // Compilation
-// gcc -o client PN_client_v0.c client_functions/src/connexion_client.c client_functions/src/character_selection.c client_functions/src/message_client.c client_functions/src/game_client.c
+// gcc -o client PN_client_v0.c client_functions/src/show_hangman.c client_functions/src/connexion_client.c client_functions/src/character_selection.c client_functions/src/message_client.c client_functions/src/game_client.c
 // Execution
 // ./client
