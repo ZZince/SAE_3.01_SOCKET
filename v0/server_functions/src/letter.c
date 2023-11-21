@@ -56,30 +56,26 @@ unsigned char upper_letter(char letter){
     }
 }
 
-/*Look if the letter is in the word. If yes, returns all the position of the letter in the word
+/*Look if the letter is in the word. If yes, returns all the position of the letter in the word. 
+Stock the position in the buffer, buffer start at 0
     Parameters:
         - [char*] word: Pointer to the word
         - [char] letter: simple char
-    Return:
-        - [int] list_letter: all the position of the letter in int
+    
 
 */
-int* position_letter(char* word, char letter){
+void position_letter(char* word, int* buffer, char letter) {
     int nb_letter = strlen(word);
-    int list_letter[nb_letter];
-    int j=0;
-    memset(list_letter,0,strlen(nb_letter));
+    int j = 0;
 
-    if (letter_in_word(word, letter)){
-        for(int i=0; i < strlen(word); i++){
-            if(word[i] == letter){
-                list_letter[j] = letter;
-                j++;
-            }
+    for (int i = 0; i < nb_letter; i++) {
+        if (word[i] == letter) {
+            buffer[j] = i;
+            j++;
         }
     }
-    return list_letter;
 }
+
 
 /*Extract the word throught of the code sent by the client WHITHOUT \0 at the end
     Parameters:

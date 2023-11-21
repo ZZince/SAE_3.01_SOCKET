@@ -12,7 +12,7 @@ int main(){
     int nb_letters_return;
     char buffer[10];
     int* positions;
-
+    int bufferint[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     memset(buffer, 0, strlen(buffer));
     memset(all_letters, 0, strlen(wrong_word));
 
@@ -36,12 +36,14 @@ int main(){
     buffer[4] = '\0';
     printf("Test for extract_word (test): %s", buffer);
 
-    positions = position_letter(wrong_word, 'o');
+    //memset(bufferint,0,40);
+    position_letter(wrong_word,bufferint, 'o');
 
-    //printf("Test for position_letter: %s", wrong_word);
-    //    for (int i = 0; i<= strlen(positions); i++){
-    //        printf("\t -%d", positions[i]);
-    //    }
+
+    printf("Test for position_letter: %s\n", wrong_word);
+        for (int i = 0; i<= (10); i++){
+            printf("\t %d", bufferint[i]);
+        }
 
     return 0;
 }
