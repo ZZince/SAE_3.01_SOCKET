@@ -96,6 +96,5 @@ int verif_only_zero(char* buffer){
             return 0;
         }
     }
-
     return 1;
 }

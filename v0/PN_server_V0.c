@@ -44,7 +44,7 @@ int main(int argc, int *argv){
     unsigned char error_message[ERROR_LEN],  // Message sent if a critical error happened
                   client_message[MESSAGE_LEN], // Message sent by client
                   server_message[MESSAGE_LEN], // Message will be send by server
-                  all_letters_in_word[strlen(WORD)], // All unique letters in researched words
+                  all_letter_in_word[strlen(WORD)], // All unique letters in researched words
                   all_letters_tried[NB_LETTERS_ALPHA], // All letters tried by client
                   word_received[strlen(WORD)], // Word sent by the client
                   letter_received; // Simple unsigned char
@@ -57,8 +57,9 @@ int main(int argc, int *argv){
     int buffer_positions[] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; // Buffer for letters positions in word
  
     if (argc > 0){ 
-        port = IPPORT_RESERVED;
+        port = 5000;
     }
+
 
     //Creating main socket
     if((socket_listen = socket_creation(port, MAX_CONNECTION)) <= 0){
@@ -98,6 +99,14 @@ int main(int argc, int *argv){
                 memset(client_message, 0, MESSAGE_LEN);
                 memset(server_message, 0, MESSAGE_LEN);
                 recv(socket_client, client_message, MESSAGE_LEN, 0);
+
+                for(int i = 0; i < 10; i++) {
+                    printf("%d ", client_message[i]);
+                }
+                printf("\n");
+
+                all_letters_in_word(WORD, all_letter_in_word);
+
                 switch (client_message[0]){
 
                 case CODE_LETTER_RECEIVED: //Client is sending a letter
@@ -111,14 +120,14 @@ int main(int argc, int *argv){
                         break; // Leave CODE_LETTER_RECEIVED and switch statements
                     }
                     if (letter_in_word(WORD, letter_received)){ //Letter is in word
-                        if (letter_in_word(all_letters_in_word, letter_received)){ //Letter is in all letter buffer
+                        if (letter_in_word(all_letter_in_word, letter_received)){ //Letter is in all letter buffer
                             // Adding the new letter found to list of all letter tried
                             all_letters_tried[letter_in_word(all_letters_tried, 0)-1] = letter_received;
                             // Suppr letter found of all unique letters in word
-                            all_letters_in_word[letter_in_word(all_letters_in_word, letter_received)-1] = 0;
+                            all_letter_in_word[letter_in_word(all_letter_in_word, letter_received)-1] = 0;
 
                             // Verify is client found all laters one by one
-                            if (verif_only_zero(all_letters_in_word)){
+                            if (verif_only_zero(all_letter_in_word)){
                                 server_message[0] = CODE_CLIENT_WON;
 
                                 if ((send(socket_client, server_message, MESSAGE_LEN, 0)) <= 0){

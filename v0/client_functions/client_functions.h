@@ -8,7 +8,7 @@ int communication_socket_creation();
 
 // character_selection.c
 char select_letter();
-bool is_letter(char character);
+bool is_not_letter(char character);
 char *select_word();
 
 // message_client.c

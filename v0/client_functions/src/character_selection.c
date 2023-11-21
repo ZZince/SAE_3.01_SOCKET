@@ -43,8 +43,9 @@ char select_letter() {
         character = getchar();
         // Clear the input buffer to prevent any remaining characters
         while (getchar() != '\n');
-
-        if (!is_letter(character)){
+        
+        // FIX - Repetition ici
+        if (!is_not_letter(character)){
             goto choice;
         }
 
@@ -88,7 +89,7 @@ char *select_word() {
     Return:
         - [char]: The checked character
 */
-bool is_letter(char character) {
+bool is_not_letter(char character) {
     return isalpha(character);
 }
 
