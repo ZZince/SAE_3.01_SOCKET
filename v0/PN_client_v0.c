@@ -108,11 +108,11 @@ int main(int argc, char *argv[]){
 	// Game Loop
 	while(!word_not_found){
 
-		choice = 'o';
+		//choice = 'o';
 
 		// Ask client what his action
+		printf("1: Send a letter\n2: Send the word\n");
 		ask:
-			printf("1: Send a letter\n2: Send the word\n");
 			scanf("%c", &choice);
 			if (choice != 49 && choice != 50)
 				goto ask;

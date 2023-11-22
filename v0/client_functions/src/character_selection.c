@@ -38,13 +38,15 @@ char select_letter() {
 
     char character;
 
+    // Clear the input buffer to prevent any remaining characters
+    while (getchar() != '\n');
+
     choice:
         printf("Entrez une lettre :\n");
-        character = getchar();
-        // Clear the input buffer to prevent any remaining characters
-        while (getchar() != '\n');
+        scanf("%c", &character);
         
         // FIX - Repetition ici
+        printf("%c\n", character);
         if (!is_not_letter(character)){
             goto choice;
         }
