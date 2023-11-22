@@ -46,7 +46,6 @@ int set_word_lenght(int number_of_letter, char *word) {
 
 /* Show the word that the player have to find on the terminal
     Parameters:
-        number_of_letter [int]: The number of letter in the word
         *word [char]: The word the player have to find
 */
 void show_word_in_cmd(char *word) {
@@ -67,7 +66,14 @@ void show_word_in_cmd(char *word) {
         printf("\n\n");
 }
 
-void character_is_good( unsigned char *buffer, unsigned char *word, char character) {
+
+/* When player find a good character, the character is now show when we show the word in cmd
+    Parameters:
+        *buffer [unsigned char]: The message from the server
+        *word [unsigned char]: The word the player have to find
+        character [char]: The character the player have found
+*/
+void character_is_good(unsigned char *buffer, unsigned char *word, char character) {
     int index = 1;
     int letter_position = buffer[index];
     for (int j = 0; j < 10; j++) {

@@ -62,16 +62,6 @@ int send_character_to_server(int socket, char character, int size) {
     message[0] = CODE_LETTER_RECEIVED; // 202
     message[1] = character;
 
-    
-
-	// Show message in decimal  ////////////////////
-    //printf("Message formé : ");
-    //for (int i = 0; i < size; ++i) {
-    //    printf("%d ", message[i]);
-    //}
-    //printf("\n");
-
-
 	// Try sending the message
     switch(nb = write(socket, message, size)){
 		case -1 : 
@@ -89,6 +79,15 @@ int send_character_to_server(int socket, char character, int size) {
 }
 
 
+/* Allow a client to send a word to the server
+    Parameter:
+        socket [int]:
+        character [char]: The word we send to the server
+        size [int]: The maximum size (number of bytes) of the message 
+
+    Return:
+        - [int]: 0 if resolved, -1 if error
+*/
 int send_word_to_server(int socket, char *word, int size) {
     unsigned char message[size]; // set in unsigned to allow values bigger than 127 in a bytes
     int nb;
@@ -164,6 +163,10 @@ char *get_message_from_server(int socket, int size) {
     Parameters:
         *buffer [unsigned char]: the message from the server
         *word [char]: the word the client have to find
+        character [char]: the last character the player sent to the server
+
+    Returns:
+        - [int]: 0 when the game still starting, positive when the game is done
 */
 int translate_message(unsigned char *buffer, char *word, char character) {
     static bool firstTime = true;

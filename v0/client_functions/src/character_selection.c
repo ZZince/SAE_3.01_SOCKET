@@ -55,6 +55,10 @@ char select_letter() {
 }
 
 
+/* Made the client select a word
+    Return:
+        - [*char]: The word choosed by the client 
+*/
 char *select_word() {
     char *word = (char *)malloc(MAX_WORD_SIZE * sizeof(char));;
 
