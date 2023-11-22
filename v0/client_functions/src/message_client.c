@@ -27,6 +27,7 @@
 // Constants
 #define CODE_NUMBER_OF_LETTER 201 // Means that the server sends the number of letters in the word
 #define CODE_LETTER_RECEIVED 202 // Send letter validation code
+#define CODE_LETTER_ALREADY_SENT 203 // When player already sent the letter
 #define LETTER_FOUND_IN_WORD 204 // A letter is found in the word validation code
 #define LETTER_NOT_FOUND_IN_WORD 205 // A letter is not found in the word validation code
 #define CODE_SEND_WORD 206 // Send word validation code
@@ -191,11 +192,16 @@ int translate_message(unsigned char *buffer, char *word, char character) {
             character_is_good(buffer, word, character);
             goto end;
 
+        case CODE_LETTER_ALREADY_SENT: // player already sent the letter, retry
+            printf("La lettre a déjà été envoyée, réessayez...\n");
+            goto end;
+
         case LETTER_NOT_FOUND_IN_WORD:  // Letter not find so we show the hangman
             error = buffer[1];
             error = abs(error - 6);
             show_hangman(error);
             goto end;
+
 
         case CODE_WORD_FOUND: // Player find the word and win the game
             printf("Vous avez trouvé le bon mot\n");
@@ -216,7 +222,7 @@ int translate_message(unsigned char *buffer, char *word, char character) {
             printf("Vous avez trouvé le bon mot\n");
             return 2;
 
-        default:
+        default: // Message unrecognized
             printf("Message inconnu\n");
             goto end;
     }
