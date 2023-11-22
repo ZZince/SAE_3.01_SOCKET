@@ -67,7 +67,7 @@ void position_letter(char* word, int* buffer, char letter, int sizeof_word) {
 
     for (int i = 0; i < sizeof_word; i++) {
         if (word[i] == letter) {
-            buffer[j] = i;
+            buffer[j] = i + 1;
             j++;
         }
     }

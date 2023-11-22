@@ -67,13 +67,21 @@ void show_word_in_cmd(char *word) {
         printf("\n\n");
 }
 
-void character_is_good(char *buffer, char *word, char character) {
+void character_is_good( unsigned char *buffer, unsigned char *word, char character) {
     int index = 1;
     int letter_position = buffer[index];
-    while(letter_position != 0) {
-        word[letter_position] = character;
-        index++;
-        letter_position = buffer[index];
+    for (int j = 0; j < 10; j++) {
+        printf(" %d", buffer[j]);
+    }
+    printf("\n");
+    while(letter_position != 255) {
+        if (letter_position == 255) {
+            break;
+        } else {
+            word[letter_position] = character;
+            index++;
+            letter_position = buffer[index];
+        }
     }
     show_word_in_cmd(word);
 }

@@ -20,4 +20,4 @@ int translate_message(unsigned char *buffer, char *word, char character);
 // game_client.c
 int set_word_lenght(int number_of_letter, char *word);
 void show_word_in_cmd(char *word);
-void character_is_good(char *buffer, char *word, char character);
+void character_is_good(unsigned char *buffer, unsigned char *word, char character);
