@@ -175,7 +175,8 @@ int main(int argc, char *argv[]){
 }
 
 
-// Compilation
-// gcc -o client PN_client_v0.c client_functions/src/show_hangman.c client_functions/src/connexion_client.c client_functions/src/character_selection.c client_functions/src/message_client.c client_functions/src/game_client.c
-// Execution
-// ./client
+/* Compilation:
+gcc -o Client.run PN_client_v0.c client_functions/src/show_hangman.c client_functions/src/connexion_client.c client_functions/src/character_selection.c client_functions/src/message_client.c client_functions/src/game_client.c
+Run: 
+./Client.run
+*/

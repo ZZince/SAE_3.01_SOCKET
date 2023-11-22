@@ -37,10 +37,10 @@
 
 /*
 Compilation:
-    gcc -o Server.run PN_server_V0.c server_functions/src/letter.c server_functions/src/connection_server.c -I server_functions
+gcc -o Server.run PN_server_V0.c server_functions/src/letter.c server_functions/src/connection_server.c -I server_functions
 */
 
-int main(int argc, int *argv){
+int main(int argc, char *argv[]){
     unsigned char error_message[ERROR_LEN],  // Message sent if a critical error happened
                   client_message[MESSAGE_LEN], // Message sent by client
                   server_message[MESSAGE_LEN], // Message will be send by server
@@ -49,15 +49,15 @@ int main(int argc, int *argv){
                   word_received[strlen(WORD)], // Word sent by the client
                   letter_received; // Simple unsigned char
 
-    int i; // Loop indice
+    int y; // Loop indice
     int socket_listen, socket_client; 
     int port = IPPORT_RESERVED;
     int try_error = TRY_ERROR; // Number of try remaining for client
     int number_letter = strlen(WORD);
     int buffer_positions[] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; // Buffer for letters positions in word
  
-    if (argc > 0){ 
-        port = 1024;
+    if (argc > 1){ 
+		sscanf(argv[1],"%d",&port);
     }
 
 
@@ -77,7 +77,8 @@ int main(int argc, int *argv){
             memset(client_message, 0, MESSAGE_LEN);
             memset(server_message, 0, MESSAGE_LEN);
             memset(all_letters_tried, 0, NB_LETTERS_ALPHA);
-            i = 0;
+            all_letters_in_word(WORD, all_letter_in_word);
+
             
             //Accept the client
             if((socket_client = client_acceptation(socket_listen)) <= 0){
@@ -96,8 +97,11 @@ int main(int argc, int *argv){
             while (1){
                 //Start of game loop
                 //Reset buffers
+                printf("boucle\n");
                 memset(client_message, 0, MESSAGE_LEN);
                 memset(server_message, 0, MESSAGE_LEN);
+                y = 0;
+
                 recv(socket_client, client_message, MESSAGE_LEN, 0);
 
                 for(int i = 0; i < 10; i++) {
@@ -105,11 +109,9 @@ int main(int argc, int *argv){
                 }
                 printf("\n");
 
-                all_letters_in_word(WORD, all_letter_in_word);
-
                 switch (client_message[0]){
 
-                case CODE_LETTER_RECEIVED: //Client is sending a letterx
+                case CODE_LETTER_RECEIVED: //Client is sending a letter
                     //Letter verification
                     if ((letter_received = upper_letter(client_message[1])) == 0){
                         server_message[0] = CODE_NOT_A_LETTER;
@@ -119,21 +121,33 @@ int main(int argc, int *argv){
                         }
                         break; // Leave CODE_LETTER_RECEIVED and switch statements
                     }
-                    if (letter_in_word(WORD, letter_received)){ //Letter is in word
-                        if (letter_in_word(all_letter_in_word, letter_received)){ //Letter is in all letter buffer
+                    if (letter_in_word(WORD, letter_received, strlen(WORD))){ //Letter is in word
+                        if (letter_in_word(all_letters_tried, letter_received, NB_LETTERS_ALPHA) == 0){ //Letter is not in all letter already tried
                             // Adding the new letter found to list of all letter tried
-                            all_letters_tried[letter_in_word(all_letters_tried, 0)-1] = letter_received;
+                            all_letters_tried[letter_in_word(all_letters_tried, 0, NB_LETTERS_ALPHA)-1] = letter_received;
+                            printf("all letters tried: \n");
+                            for(int i = 0; i <= 26; i++){
+                                printf("%d", all_letters_tried[i]);
+                                }
+                            printf("\n");
                             // Suppr letter found of all unique letters in word
-                            all_letter_in_word[letter_in_word(all_letter_in_word, letter_received)-1] = 0;
-
+                            all_letter_in_word[(letter_in_word(all_letter_in_word, letter_received, strlen(WORD))-1)] = 0;
+                            printf("all letter in word: \n");
+                            for (int i = 0; i <= strlen(WORD); i++){
+                                printf("%d ", all_letter_in_word[i]);
+                            }
+                            printf("\n");
                             // Verify is client found all laters one by one
-                            if (verif_only_zero(all_letter_in_word, strlen(WORD))){
+                            printf("verif only 0: %d\n", verif_only_zero(all_letter_in_word, strlen(WORD)));
+                            if (verif_only_zero(all_letter_in_word, strlen(WORD)) == 1){
                                 server_message[0] = CODE_CLIENT_WON;
 
                                 if ((send(socket_client, server_message, MESSAGE_LEN, 0)) <= 0){
                                     strcpy(error_message, ERROR_SENDING);
                                     goto error;
                                 }
+
+                                goto game_end;
                             }
 
                             // There is still letters to find
@@ -141,10 +155,13 @@ int main(int argc, int *argv){
                                 server_message[0] = CODE_LETTER_FOUND_IN_WORD;
 
                                 position_letter(WORD, buffer_positions, letter_received, strlen(WORD));
-                                i = 0;
                                 do{
-                                    server_message[i+1] = buffer_positions[i]; 
-                                } while (buffer_positions[i++] > 0); // i++ evalued after comparaison
+                                    y++;
+                                    printf("y = %d\n", y);
+                                    server_message[y] = buffer_positions[y-1]-1; 
+                                } while (buffer_positions[y] > 0); 
+
+                                server_message[y+1] = 255;
 
                                 if ((send(socket_client, server_message, MESSAGE_LEN, 0)) <= 0){
                                     strcpy(error_message, ERROR_SENDING);
@@ -152,7 +169,7 @@ int main(int argc, int *argv){
                                 }
                             }
                         }
-                        else if (letter_in_word(all_letters_tried, letter_received)){ // Letter already sent by client
+                        else if (letter_in_word(all_letters_tried, letter_received, NB_LETTERS_ALPHA) > 0){ // Letter already sent by client
                             server_message[0] = CODE_LETTER_ALREADY_SENT;
                             if ((send(socket_client, server_message, MESSAGE_LEN, 0)) <= 0){
                                 strcpy(error_message, ERROR_SENDING);
@@ -167,7 +184,7 @@ int main(int argc, int *argv){
                         }
                     }
                     else { //Letter is not in word
-                        if (letter_in_word(all_letters_tried, letter_received)){ //Letter already sent by client
+                        if (letter_in_word(all_letters_tried, letter_received, NB_LETTERS_ALPHA)){ //Letter already sent by client
                            server_message[0] = CODE_LETTER_ALREADY_SENT;
 
                            if ((send(socket_client, server_message, MESSAGE_LEN, 0)) <= 0){
@@ -263,7 +280,7 @@ int main(int argc, int *argv){
         server_message[0] = CODE_CRITICAL_ERROR;
         send(socket_client, server_message, MESSAGE_LEN, 0);
 
-        if(close(socket_client) > 0){
+        if(close(socket_client) >= 0){
             printf("Client socket closed");
         }
         else{
@@ -275,8 +292,9 @@ int main(int argc, int *argv){
 
     game_end:
         // Client's game is ended
-        if(close(socket_client) > 0){
-            printf("Client socket closed properly");
+        printf("Game is ended\n");
+        if(close(socket_client) >= 0){
+            printf("Client socket closed properly\n");
             goto start_loop; // Return to client acceptation
         }
         else{

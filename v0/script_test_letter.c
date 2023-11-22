@@ -14,7 +14,8 @@ int main(){
     int* positions;
     int bufferint[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     char* only_zero = "\0\0\0";
-    char* not_only_zero = "0i0d";
+    char* not_only_zero = "\0i0d";
+    int len_not_only_zero = 3;
 
     memset(buffer, 0, strlen(buffer));
     memset(all_letters, 0, strlen(wrong_word));
@@ -22,8 +23,8 @@ int main(){
     printf("Tests for letter.c:\n");
 
     printf("Test with a wrong letter: \n");
-    printf("Result for letter %c in %s: %d\n", letter, wrong_word, letter_in_word(wrong_word, letter));
-    printf("Result for letter %c in %s: %d\n", letter, right_word, letter_in_word(right_word, letter));
+    printf("Result for letter %c in %s: %d\n", letter, wrong_word, letter_in_word(wrong_word, letter, strlen(wrong_word)));
+    printf("Result for letter %c in %s: %d\n", letter, right_word, letter_in_word(right_word, letter, strlen(wrong_word)));
 
     nb_letters_return = all_letters_in_word(wrong_word, all_letters);
 
@@ -39,7 +40,7 @@ int main(){
     buffer[4] = '\0';
     printf("Test for extract_word (test): %s\n", buffer);
 
-    position_letter(wrong_word,bufferint, 'o');
+    position_letter(wrong_word, bufferint, 'o', strlen(wrong_word));
 
 
     printf("Test for position_letter: %s\n", wrong_word);
@@ -48,8 +49,8 @@ int main(){
         }
 
     printf("\n");
-    printf("Test for verif_only_zero: %d\n", verif_only_zero(only_zero));
-    printf("Test for verif_only_zero: %d\n", verif_only_zero(not_only_zero));
+    printf("Test for verif_only_zero: %d\n", verif_only_zero(only_zero, strlen(only_zero)));
+    printf("Test for verif_only_zero: %d\n", verif_only_zero(not_only_zero, len_not_only_zero));
 }
 /*
 Compilation

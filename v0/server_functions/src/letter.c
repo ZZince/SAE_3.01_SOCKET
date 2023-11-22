@@ -8,11 +8,12 @@
     Parameters:
         - [char*] word: Pointer to the word
         - [char] letter: ASCII character
+        - [int] sizeof_buffer: Number of caracters in buffer
     Return:
         - [int]: Letter position + 1 in char if found, 0 else
 */
-int letter_in_word(char* word, char letter){
-    for (int i = 0; i < strlen(word); i++){
+int letter_in_word(char* word, char letter, int sizeof_word){
+    for (int i = 0; i < sizeof_word; i++){
         if (word[i] == letter){
             return i+1;
         }
@@ -24,14 +25,14 @@ int letter_in_word(char* word, char letter){
 /*Add all unique letters found in word to buffer
     Parameters:
         - [char*] word: Pointer to the word
-        - [char*] letter: Pointer to buffer
+        - [char*] buffer: Pointer to buffer
     Return:
         - [int]: Number of unique letter added to buffer
 */
 int all_letters_in_word(char* word, char* buffer){
     int index_buffer = 0;
     for (int i = 0; i < strlen(word); i++){
-        if (letter_in_word(buffer, word[i]) == 0 && word[i] != '-'){
+        if (letter_in_word(buffer, word[i], strlen(word)) == 0 && word[i] != '-'){
             buffer[index_buffer] = word[i];
             index_buffer++;
         }
@@ -60,7 +61,9 @@ unsigned char upper_letter(char letter){
 Stock the position in the buffer, buffer start at 0
     Parameters:
         - [char*] word: Pointer to the word
+        - [char*] buffer: Buffer will contain all letter positions
         - [char] letter: simple char
+        - [int] sizeof_buffer: Number of caracters in buffer               
 */
 void position_letter(char* word, int* buffer, char letter, int sizeof_word) {
     int j = 0;
@@ -87,8 +90,15 @@ void extract_word(char* buffer, char* string){
     }
 }
 
+
+/*Return 1 if the buffer contain only \0 characters
+    Parameters:
+        - [char*] buffer: Character list
+        - [int] sizeof_buffer: Number of caracters in buffer
+    Return
+        - [int]: 1 if buffer countain only \0 equivalent, 0 else*/
 int verif_only_zero(char* buffer, int sizeof_buffer){
-    for (int i = 0; i <= sizeof_buffer; i++){
+    for (int i = 0; i <= sizeof_buffer; i++){ // DO NOT USE STRLEN
         if (buffer[i] != 0){
             return 0;
         }
