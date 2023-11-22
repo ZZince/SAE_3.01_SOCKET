@@ -61,14 +61,11 @@ Stock the position in the buffer, buffer start at 0
     Parameters:
         - [char*] word: Pointer to the word
         - [char] letter: simple char
-    
-
 */
-void position_letter(char* word, int* buffer, char letter) {
-    int nb_letter = strlen(word);
+void position_letter(char* word, int* buffer, char letter, int sizeof_word) {
     int j = 0;
 
-    for (int i = 0; i < nb_letter; i++) {
+    for (int i = 0; i < sizeof_word; i++) {
         if (word[i] == letter) {
             buffer[j] = i;
             j++;
@@ -90,8 +87,8 @@ void extract_word(char* buffer, char* string){
     }
 }
 
-int verif_only_zero(char* buffer){
-    for (int i = 0; i <= strlen(buffer); i++){
+int verif_only_zero(char* buffer, int sizeof_buffer){
+    for (int i = 0; i <= sizeof_buffer; i++){
         if (buffer[i] != 0){
             return 0;
         }

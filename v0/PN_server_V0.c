@@ -127,7 +127,7 @@ int main(int argc, int *argv){
                             all_letter_in_word[letter_in_word(all_letter_in_word, letter_received)-1] = 0;
 
                             // Verify is client found all laters one by one
-                            if (verif_only_zero(all_letter_in_word)){
+                            if (verif_only_zero(all_letter_in_word, strlen(WORD))){
                                 server_message[0] = CODE_CLIENT_WON;
 
                                 if ((send(socket_client, server_message, MESSAGE_LEN, 0)) <= 0){
@@ -140,7 +140,7 @@ int main(int argc, int *argv){
                             else{
                                 server_message[0] = CODE_LETTER_FOUND_IN_WORD;
 
-                                position_letter(WORD, buffer_positions, letter_received);
+                                position_letter(WORD, buffer_positions, letter_received, strlen(WORD));
                                 do{
                                     server_message[i+1] = buffer_positions[i]; 
                                 } while (buffer_positions[i++] > 0); // i++ evalued after comparaison
