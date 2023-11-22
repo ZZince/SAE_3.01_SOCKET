@@ -57,7 +57,7 @@ int main(int argc, int *argv){
     int buffer_positions[] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; // Buffer for letters positions in word
  
     if (argc > 0){ 
-        port = 5000;
+        port = 1024;
     }
 
 
@@ -141,10 +141,11 @@ int main(int argc, int *argv){
                                 server_message[0] = CODE_LETTER_FOUND_IN_WORD;
 
                                 position_letter(WORD, buffer_positions, letter_received, strlen(WORD));
+                                i = 0;
                                 do{
                                     server_message[i+1] = buffer_positions[i]; 
                                 } while (buffer_positions[i++] > 0); // i++ evalued after comparaison
-                            
+
                                 if ((send(socket_client, server_message, MESSAGE_LEN, 0)) <= 0){
                                     strcpy(error_message, ERROR_SENDING);
                                     goto error;
@@ -244,6 +245,7 @@ int main(int argc, int *argv){
                     }
                 
                 default:
+                printf("test\n");
                     // If the code isn't recognized
                     strcpy(error_message, ERROR_WRONG_CODE_RECEIVED);
                     goto error;
