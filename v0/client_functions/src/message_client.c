@@ -34,7 +34,7 @@
 #define CODE_WORD_FOUND 207 // Word find validation code
 #define CODE_WORD_NOT_FOUND 208 // Word not find validation code
 #define CODE_PLAYER_LOST 209 // Player loose the game validation code
-#define CODE_PLAYER_WON 2010 // Player win the game (he get all letters)
+#define CODE_PLAYER_WON 210 // Player win the game (he get all letters)
  
 
 

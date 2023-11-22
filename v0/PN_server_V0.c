@@ -205,8 +205,12 @@ int main(int argc, char *argv[]){
                                 }
 
                                 goto game_end;
+                            
+                            
                         }
                             else { //Client has still life remaining
+                                all_letters_tried[letter_in_word(all_letters_tried, 0, NB_LETTERS_ALPHA)-1] = letter_received;
+
                                 server_message[0] = CODE_LETTER_NOT_IN_WORD;
                                 server_message[1] = try_error;
 
