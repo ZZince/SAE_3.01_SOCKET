@@ -183,7 +183,7 @@ char *get_message_from_server(int socket, int size) {
 		default: // Get the message
 		    message[nb]='\0';
             // Show message
-            printf("Message reçu du serveur (%d octets) : ", nb);
+            printf("Message reçu du serveur (%d octets) : \n", nb);
 	}
 
 

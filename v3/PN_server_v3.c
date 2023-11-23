@@ -44,7 +44,7 @@
 
 /*
 Compilation:
-gcc -o Server.run PN_server_v2.c server_functions/src/letter.c server_functions/src/connection_server.c -I server_functions
+gcc -o Server.run PN_server_v3.c server_functions/src/letter.c server_functions/src/connection_server.c -I server_functions
 */
 
 int main(int argc, char *argv[]){
@@ -61,6 +61,7 @@ int main(int argc, char *argv[]){
 
     int y; // Loop indice
     int r_fork;
+    int word_choiced = 0;
     int socket_listen, nb_client;
     int socket_client1[1], socket_client2[1];
     int port = IPPORT_RESERVED;
@@ -89,18 +90,27 @@ int main(int argc, char *argv[]){
             }
 
             printf("Sockets created\n");
-        r_fork = fork();
-        if (r_fork == 0){
+            r_fork = fork();
+            if (r_fork == -1){
+                perror("Error during fork: ");
+                close(socket_listen);
+                close(socket_client1[0]);
+                close(socket_client2[0]);
+                _Exit(EXIT_FAILURE);
+            }
+            else if (r_fork == 0){
+            
+            
             // Buffers reset
-            memset(error_message, 0, ERROR_LEN);
-            memset(client_message, 0, MESSAGE_LEN);
-            memset(server_message, 0, MESSAGE_LEN);
-            memset(all_letters_tried_client, 0, NB_LETTERS_ALPHA);
-            all_letters_in_word(word, all_letter_in_word_client);
+            memset(error_message, 0x00, ERROR_LEN);
+            memset(client_message, 0x00, MESSAGE_LEN);
+            memset(server_message, 0x00, MESSAGE_LEN);
+            memset(word, 0x00, MESSAGE_LEN);
+            memset(all_letters_tried_client, 0x00, NB_LETTERS_ALPHA);
 
             printf("Initialisation\n");
 
-            while(!word) {
+            while(word_choiced == 0) {
                 
                 server_message[0] = CODE_CLIENT_CHOOSE_CUSTOM_WORD;
                 if((send(socket_client1[0], server_message, MESSAGE_LEN, 0)) <= 0){
@@ -112,13 +122,11 @@ int main(int argc, char *argv[]){
 
                 if (client_message[0] == CODE_CLIENT_SENT_CUSTOM_WORD) {
                     for (int j = 0; j < MESSAGE_LEN; j++) {
-                        if (client_message[j++] == -1){
-                            goto start;
-                        }
-                        word[j] = client_message[j++];
+                        word[j] = client_message[j + 1];
                     }
+                    all_letters_in_word(word, all_letter_in_word_client );
+                    word_choiced = 1;
                 }
-
             }
 
             start:
@@ -139,6 +147,7 @@ int main(int argc, char *argv[]){
                 printf("boucle\n");
                 memset(client_message, 0, MESSAGE_LEN);
                 memset(server_message, 0, MESSAGE_LEN);
+                memset(buffer_positions, 0, 9);
                 y = 0;
                 
                 recv(socket_client2[0], client_message, MESSAGE_LEN, 0);
@@ -169,7 +178,7 @@ int main(int argc, char *argv[]){
                             
                             printf("all letters tried: \n");
                             for(int i = 0; i <= 26; i++){
-                                printf("%d", all_letter_in_word_client[i]);
+                                printf("%d", all_letters_tried_client[i]);
                             }
                             
                             printf("\n");
@@ -183,7 +192,7 @@ int main(int argc, char *argv[]){
                             }
                             printf("\n");
                             
-                            // Verify is client found all laters one by one
+                            // Verify is client found all letters one by one
                             printf("verif only 0: %d\n", verif_only_zero(all_letter_in_word_client, strlen(word)));
                             if (verif_only_zero(all_letter_in_word_client, strlen(word)) == 1){
                                 server_message[0] = CODE_CLIENT_WON;
@@ -368,20 +377,12 @@ int main(int argc, char *argv[]){
 
        }
 
-    else if (r_fork == -1)
-    {
-        perror("Error during fork: ");
-        close(socket_client1);
-        close(socket_client2);
-        close(socket_listen);
-        _Exit(EXIT_FAILURE);
-    }
-
     else{
-        close(socket_client1);
-        close(socket_client2);
+        close(socket_client1[0]);
+        close(socket_client2[0]);
         goto setup_game;
     }
+    
 
     error:
         // Error display
@@ -396,8 +397,9 @@ int main(int argc, char *argv[]){
         // Sockets closing
         close(socket_client1[0]);
         close(socket_client2[0]);
+        word_choiced = 0;
 
         // Return to client acceptation
         goto setup_game;  
-    }    
+    }
 }
