@@ -35,9 +35,6 @@
 #define CODE_WORD_NOT_FOUND 208 // Word not find validation code
 #define CODE_PLAYER_LOST 209 // Player loose the game validation code
 #define CODE_PLAYER_WON 210 // Player win the game (he get all letters)
-#define CODE_OPPONENT_LOST 211 // Means that the opponent loose his game
-#define CODE_OPPONENT_WIN 212 // Means that the opponent win his game
-#define CODE_CLIENT_CAN_PLAY 213 // Means that the player can continue his game
  
 
 
@@ -153,6 +150,10 @@ char *get_message_from_server(int socket, int size) {
 		    message[nb]='\0';
             // Show message
             printf("Message reçu du serveur (%d octets) : ", nb);
+            for(int i = 0; i < size; i++) {
+                printf("%d ", message[i]);
+            }
+            printf("\n");
 	}
 
 
@@ -220,19 +221,6 @@ int translate_message(unsigned char *buffer, char *word, char character) {
         case CODE_PLAYER_WON: // Player won the game (he gess all the letters)
             printf("Vous avez trouvé le bon mot\n");
             return 2;
-
-        case CODE_OPPONENT_LOST: // The opponent lost so you win
-            printf("Le joueur adverse a perdu sa partie, par conséquent vous gagné !\n");
-            return 2;
-
-        case CODE_OPPONENT_WIN: // The opponent win so you loose
-            printf("Le joueur adverse a trouvé le mot avant vous, par conséquent vous perdez...\n");
-            return 2;
-
-        case CODE_CLIENT_CAN_PLAY: // Game continue, client can play his turn
-            printf("C'est votre tour !\n");
-            return 0;
-
 
         default: // Message unrecognized
             printf("Message inconnu\n");

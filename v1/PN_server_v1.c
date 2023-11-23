@@ -99,7 +99,7 @@ int main(int argc, char *argv[]){
 
             // Send to both clients len of word
             server_message[0] = CODE_NUMBER_LETTER;
-            server_message[0] = strlen(WORD);
+            server_message[1] = strlen(WORD);
             if((send(socket_client1[0], server_message, MESSAGE_LEN, 0)) <= 0){
                 strcpy(error_message, ERROR_SENDING);
                 goto error;
@@ -525,13 +525,13 @@ int main(int argc, char *argv[]){
 
         // Send to client who didn't play this turn if an event happened (opponent won or lost)
         if (nb_client == 0){
-            if ((send(socket_client2, server_message, MESSAGE_LEN, 0)) <= 0){
+            if ((send(socket_client2[0], server_message, MESSAGE_LEN, 0)) <= 0){
                 perror(ERROR_SENDING);
                 goto error;
             }
         }
         else{
-            if((send(socket_client1, server_message, MESSAGE_LEN, 0)) <= 0){
+            if((send(socket_client1[0], server_message, MESSAGE_LEN, 0)) <= 0){
                 perror(ERROR_SENDING);
                 goto error;
             }

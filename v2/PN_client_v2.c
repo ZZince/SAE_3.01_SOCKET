@@ -93,7 +93,6 @@ int main(int argc, char *argv[]){
 
 	printf("Connexion au serveur %s:%d réussie!\n",ip_dest,port_dest);
 
-	printf("En attente du serveur de jeu..\n");
 	// Get a message from the server
 	received_message = get_message_from_server(socket, MESSAGE_LEN);
 	if (received_message == NULL) {
@@ -109,19 +108,7 @@ int main(int argc, char *argv[]){
 	// Game Loop
 	while(!word_not_found){
 
-		// Get a message from the server (check if client can play or not)
-		received_message = get_message_from_server(socket, MESSAGE_LEN);
-		if (received_message == NULL) {
-			perror("Erreur lors de la réception du message");
-			exit(-1); // ERROR
-		}
-
-		// Translate the message that the server send
-		word_not_found = translate_message(received_message, word, letter);
-
-		if (word_not_found) {
-			goto end;
-		}
+		//choice = 'o';
 
 		// Ask client what his action
 		printf("1: Send a letter\n2: Send the word\n");
@@ -166,32 +153,30 @@ int main(int argc, char *argv[]){
 		memset(received_message, 0x00, MESSAGE_LEN); // refresh the message
 	}
 
-	end:
-
-		// If player have won (find the good word)
-		if (word_not_found == 1) {
-			printf("Le mot était : ");
-			for(int i = 0; i < 10; i++) {
-				printf("%c", client_word[i]);
-			}
-			printf("\n");
+	// If player have won (find the good word)
+	if (word_not_found == 1) {
+		printf("Le mot était : ");
+		for(int i = 0; i < 10; i++) {
+			printf("%c", client_word[i]);
 		}
+		printf("\n");
+	}
 
-		if (word_not_found == 2) {
-			printf("Le mot était : SOCKET\n");
-		}
-		
-		// Free memory allocated
-		free(received_message);
+	if (word_not_found == 2) {
+		printf("Le mot était : SOCKET\n");
+	}
+	
+	// Free memory allocated
+	free(received_message);
 
-		// Close the socket and leave
-		close(socket);
-		return 0;
+	// Close the socket and leave
+	close(socket);
+	return 0;
 }
 
 
 /* Compilation:
-gcc -o Client.run PN_client_v1.c client_functions/src/show_hangman.c client_functions/src/connexion_client.c client_functions/src/character_selection.c client_functions/src/message_client.c client_functions/src/game_client.c
+gcc -o Client.run PN_client_v2.c client_functions/src/show_hangman.c client_functions/src/connexion_client.c client_functions/src/character_selection.c client_functions/src/message_client.c client_functions/src/game_client.c
 Run: 
 ./Client.run
 */
