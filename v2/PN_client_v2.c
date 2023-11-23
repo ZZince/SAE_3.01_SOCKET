@@ -209,14 +209,10 @@ int main(int argc, char *argv[]){
 		// If player have won (find the good word)
 		if (word_not_found == 1) {
 			printf("Le mot était : ");
-			for(int i = 0; i < 10; i++) {
+			for(int i = 0; i < 50; i++) {
 				printf("%c", client_word[i]);
 			}
 			printf("\n");
-		}
-
-		if (word_not_found == 2) {
-			printf("Le mot était : SOCKET\n");
 		}
 		
 		// Free memory allocated

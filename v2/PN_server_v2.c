@@ -96,7 +96,6 @@ int main(int argc, char *argv[]){
             memset(server_message, 0x00, MESSAGE_LEN);
             memset(word, 0x00, MESSAGE_LEN);
             memset(all_letters_tried_client, 0x00, NB_LETTERS_ALPHA);
-            all_letters_in_word(word, all_letter_in_word_client );
 
             printf("Initialisation\n");
 
@@ -114,6 +113,7 @@ int main(int argc, char *argv[]){
                     for (int j = 0; j < MESSAGE_LEN; j++) {
                         word[j] = client_message[j + 1];
                     }
+                    all_letters_in_word(word, all_letter_in_word_client );
                     word_choiced = 1;
                 }
             }
@@ -136,6 +136,7 @@ int main(int argc, char *argv[]){
                 printf("boucle\n");
                 memset(client_message, 0, MESSAGE_LEN);
                 memset(server_message, 0, MESSAGE_LEN);
+                memset(buffer_positions, 0, 9);
                 y = 0;
                 
                 recv(socket_client2[0], client_message, MESSAGE_LEN, 0);
@@ -166,7 +167,7 @@ int main(int argc, char *argv[]){
                             
                             printf("all letters tried: \n");
                             for(int i = 0; i <= 26; i++){
-                                printf("%d", all_letter_in_word_client[i]);
+                                printf("%d", all_letters_tried_client[i]);
                             }
                             
                             printf("\n");
@@ -180,7 +181,7 @@ int main(int argc, char *argv[]){
                             }
                             printf("\n");
                             
-                            // Verify is client found all laters one by one
+                            // Verify is client found all letters one by one
                             printf("verif only 0: %d\n", verif_only_zero(all_letter_in_word_client, strlen(word)));
                             if (verif_only_zero(all_letter_in_word_client, strlen(word)) == 1){
                                 server_message[0] = CODE_CLIENT_WON;
