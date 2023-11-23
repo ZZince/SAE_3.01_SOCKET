@@ -60,6 +60,7 @@ int main(int argc, char *argv[]){
                   letter_received; // Simple unsigned char
 
     int y; // Loop indice
+    int word_choiced = 0;
     int socket_listen, nb_client;
     int socket_client1[1], socket_client2[1];
     int port = IPPORT_RESERVED;
@@ -98,7 +99,7 @@ int main(int argc, char *argv[]){
 
             printf("Initialisation\n");
 
-            while(!word) {
+            while(word_choiced == 0) {
                 
                 server_message[0] = CODE_CLIENT_CHOOSE_CUSTOM_WORD;
                 if((send(socket_client1[0], server_message, MESSAGE_LEN, 0)) <= 0){
@@ -115,6 +116,7 @@ int main(int argc, char *argv[]){
                         }
                         word[j] = client_message[j++];
                     }
+                    word_choiced = 1;
                 }
 
             }
@@ -379,6 +381,7 @@ int main(int argc, char *argv[]){
         // Sockets closing
         close(socket_client1[0]);
         close(socket_client2[0]);
+        word_choiced = 0;
 
         // Return to client acceptation
         goto setup_game;   

@@ -27,7 +27,7 @@
 #include "client_functions/client_functions.h"
 
 // Constant
-#define MESSAGE_LEN 10 // = Maximal lenght of the messages
+#define MESSAGE_LEN 50 // = Maximal lenght of the messages
 #define MAX_WORD_SIZE 256 // = Maximal lenght of the word
 #define CODE_CLIENT_CHOOSE_WORD 214 // = Client choose the custom word
 #define CODE_CLIENT2_FOUND_WORD 216
@@ -142,6 +142,7 @@ int main(int argc, char *argv[]){
     else if (received_message[0] == CODE_CLIENT2_LOST_TRY)
     {
         printf("Le joueur 2 à commit une erreur, il lui reste %d tentative(s)\n", received_message[1]);
+		goto client1_loop;
     }
 	
 	else {
