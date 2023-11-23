@@ -93,6 +93,7 @@ int main(int argc, char *argv[]){
 
 	printf("Connexion au serveur %s:%d réussie!\n",ip_dest,port_dest);
 
+	printf("En attente du serveur de jeu..\n");
 	// Get a message from the server
 	received_message = get_message_from_server(socket, MESSAGE_LEN);
 	if (received_message == NULL) {

@@ -43,7 +43,7 @@ int socket_creation(const int port, const int max_connection) {
 
 /*Wait for a client connection 
     Parameters:
-        - [int] Socket ready to be used
+        - [int] listen_socket: Socket ready to be used
     Return:
         - [int] New socket between client and server
 */
@@ -59,6 +59,27 @@ int client_acceptation(const int listen_socket) {
 
     return dialog_socket;
 
+}
+
+/*Wait for 2 clients connection and put both socket_fd in int pointer
+    Parameters:
+        - [int] listen_socket: Socket ready to be used
+        - [int*] socket_client1: Pointer to countain file descriptor adress for client 1
+        - [int*] socket_client2: Pointer to countain file descriptor adress for client 2
+    Return:
+        - [int] 0 if no error happened, -1 else
+*/
+int wait_for_two_clients(int listen_socket, int* socket_client1, int* socket_client2){
+
+    if ((socket_client1[0] = client_acceptation(listen_socket)) < 0){
+        return -1;
+    }
+
+    if ((socket_client2[0] = client_acceptation(listen_socket)) < 0){
+        return -1;
+    }
+
+    return 0;
 }
 
 
