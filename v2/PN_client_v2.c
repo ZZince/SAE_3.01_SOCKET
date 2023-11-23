@@ -155,15 +155,7 @@ int main(int argc, char *argv[]){
 	// Game Loop
 	while(!word_not_found){
 
-		// Get a message from the server (check if client can play or not)
-		received_message = get_message_from_server(socket, MESSAGE_LEN);
-		if (received_message == NULL) {
-			perror("Erreur lors de la réception du message");
-			exit(-1); // ERROR
-		}
-
-		// Translate the message that the server send
-		word_not_found = translate_message(received_message, word, letter);
+		printf("Je suis ici\n");
 
 		if (word_not_found) {
 			goto end;

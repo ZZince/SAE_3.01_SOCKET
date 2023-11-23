@@ -78,7 +78,7 @@ char *select_word() {
         }
 
         // Set the word in uppercase
-        for (size_t i = 0; i < sizeof(word); ++i) {
+        for (size_t i = 0; i < MAX_WORD_SIZE; ++i) {
         word[i] = toupper(word[i]);
         }
 

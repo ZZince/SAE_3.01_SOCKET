@@ -91,10 +91,11 @@ int main(int argc, char *argv[]){
             printf("Sockets created\n");
 
             // Buffers reset
-            memset(error_message, 0, ERROR_LEN);
-            memset(client_message, 0, MESSAGE_LEN);
-            memset(server_message, 0, MESSAGE_LEN);
-            memset(all_letters_tried_client, 0, NB_LETTERS_ALPHA);
+            memset(error_message, 0x00, ERROR_LEN);
+            memset(client_message, 0x00, MESSAGE_LEN);
+            memset(server_message, 0x00, MESSAGE_LEN);
+            memset(word, 0x00, MESSAGE_LEN);
+            memset(all_letters_tried_client, 0x00, NB_LETTERS_ALPHA);
             all_letters_in_word(word, all_letter_in_word_client );
 
             printf("Initialisation\n");
@@ -111,14 +112,10 @@ int main(int argc, char *argv[]){
 
                 if (client_message[0] == CODE_CLIENT_SENT_CUSTOM_WORD) {
                     for (int j = 0; j < MESSAGE_LEN; j++) {
-                        if (client_message[j++] == -1){
-                            goto start;
-                        }
-                        word[j] = client_message[j++];
+                        word[j] = client_message[j + 1];
                     }
                     word_choiced = 1;
                 }
-
             }
 
             start:
