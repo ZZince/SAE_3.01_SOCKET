@@ -111,7 +111,6 @@ int main(int argc, char *argv[]){
 	// Client 1 Choose a custom word, client 2 have to find it
     if (received_message[0] == CODE_CLIENT_CHOOSE_WORD) {
         // Client choose the custom word of the game
-
 		printf("Choisissez le mot pour le second joueur\n");
         client_word = select_word();
         if (send = send_custom_word_to_server(socket, client_word, MESSAGE_LEN) == -1) {
@@ -120,25 +119,25 @@ int main(int argc, char *argv[]){
 
         goto client1_loop;
     }
+	// Client 1 know when client 2 found a letter
     else if (received_message[0] == CODE_CLIENT2_FOUND_LETTER)
     {
         printf("Le joueur 2 à trouvé la lettre: %c\n", received_message[1]);
         goto client1_loop;
     }
-
+	// Client 1 know when client 2 have found the word
     else if (received_message[0] == CODE_CLIENT2_FOUND_WORD)
     {
         printf("Le joueur 2 à deviné votre mot !\n");
         goto end_observer;
     }
-    
-
+    // Client 1 know when client 2 doesn't found the word
     else if (received_message[0] == CODE_CLIENT2_LOST_GAME)
     {
-        printf("Le joueur 2 à échoué à trouvr votre mot !\n");
+        printf("Le joueur 2 à échoué à trouver votre mot !\n");
         goto end_observer;
     }
-
+	// Client 1 know how many try client 1 have left
     else if (received_message[0] == CODE_CLIENT2_LOST_TRY)
     {
         printf("Le joueur 2 à commit une erreur, il lui reste %d tentative(s)\n", received_message[1]);
@@ -154,8 +153,6 @@ int main(int argc, char *argv[]){
 
 	// Game Loop
 	while(!word_not_found){
-
-		printf("Je suis ici\n");
 
 		if (word_not_found) {
 			goto end;

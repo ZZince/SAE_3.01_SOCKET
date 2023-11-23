@@ -67,16 +67,6 @@ int send_character_to_server(int socket, char character, int size) {
     message[0] = CODE_LETTER_RECEIVED; // 202
     message[1] = character;
 
-    
-
-	// Show message in decimal  ////////////////////
-    //printf("Message formé : ");
-    //for (int i = 0; i < size; ++i) {
-    //    printf("%d ", message[i]);
-    //}
-    //printf("\n");
-
-
 	// Try sending the message
     switch(nb = write(socket, message, size)){
 		case -1 : 
@@ -93,7 +83,15 @@ int send_character_to_server(int socket, char character, int size) {
     return 0;
 }
 
+/* Allow a client to send a word to the server
+    Parameter:
+        socket [int]: the descriptor between client and server
+        character [char]: The word we send to the server
+        size [int]: The maximum size (number of bytes) of the message 
 
+    Return:
+        - [int]: 0 if resolved, -1 if error
+*/
 int send_word_to_server(int socket, char *word, int size) {
     unsigned char message[size]; // set in unsigned to allow values bigger than 127 in a bytes
     int nb;
@@ -122,7 +120,15 @@ int send_word_to_server(int socket, char *word, int size) {
     return 0;
 }
 
+/* Allow a client to send a custom word (choosed by the client) to the server
+    Parameter:
+        socket [int]: the descriptor between client and server
+        character [char]: The word we send to the server
+        size [int]: The maximum size (number of bytes) of the message 
 
+    Return:
+        - [int]: 0 if resolved, -1 if error
+*/
 int send_custom_word_to_server (int socket, char *word, int size) {
     unsigned char message[size]; // set in unsigned to allow values bigger than 127 in a bytes
     int nb;
