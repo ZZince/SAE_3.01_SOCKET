@@ -87,7 +87,7 @@ int main(int argc, char *argv[]){
 
 
 	////////////////////////////// Server Connexion ////////////////////////////////////////////////
-
+	printf("Création\n");
 
 	// Start of the connexion with the server
 	if((connect(socket, (struct sockaddr *)&sockaddrDistant, longueurAdresse)) == -1){
@@ -99,7 +99,7 @@ int main(int argc, char *argv[]){
 	printf("Connexion au serveur %s:%d réussie!\n",ip_dest,port_dest);
 
 	client1_loop:
-	memset(received_message, 0, MESSAGE_LEN);
+	//memset(received_message, 0, MESSAGE_LEN);
 	printf("En attente du serveur de jeu..\n");
 	// Get a message from the server
 	received_message = get_message_from_server(socket, MESSAGE_LEN);
@@ -109,38 +109,42 @@ int main(int argc, char *argv[]){
 	}
 
 	// Client 1 Choose a custom word, client 2 have to find it
-	if (received_message[0] == CODE_CLIENT_CHOOSE_WORD) {
-		// Client choose the custom word of the game
-		client_word = select_word();
-		if (send = send_custom_word_to_server(socket, client_word, MESSAGE_LEN) == -1) {
-			perror("Envoi du message impossible");
-		}
+    if (received_message[0] == CODE_CLIENT_CHOOSE_WORD) {
+        // Client choose the custom word of the game
 
-	else if (received_message[0] == CODE_CLIENT2_FOUND_LETTER)
-	{
-		printf("Le joueur 2 à trouvé la lettre: %c", received_message[1]);
-		goto client1_loop;
-	}
+		printf("Choisissez le mot pour le second joueur\n");
+        client_word = select_word();
+        if (send = send_custom_word_to_server(socket, client_word, MESSAGE_LEN) == -1) {
+            perror("Envoi du message impossible");
+        }
 
-	else if (received_message[0] == CODE_CLIENT2_FOUND_WORD)
-	{
-		printf("Le joueur 2 à deviné votre mot !");
-		goto end_observer;
-	}
+        goto client1_loop;
+    }
+    else if (received_message[0] == CODE_CLIENT2_FOUND_LETTER)
+    {
+        printf("Le joueur 2 à trouvé la lettre: %c\n", received_message[1]);
+        goto client1_loop;
+    }
+
+    else if (received_message[0] == CODE_CLIENT2_FOUND_WORD)
+    {
+        printf("Le joueur 2 à deviné votre mot !\n");
+        goto end_observer;
+    }
+    
+
+    else if (received_message[0] == CODE_CLIENT2_LOST_GAME)
+    {
+        printf("Le joueur 2 à échoué à trouvr votre mot !\n");
+        goto end_observer;
+    }
+
+    else if (received_message[0] == CODE_CLIENT2_LOST_TRY)
+    {
+        printf("Le joueur 2 à commit une erreur, il lui reste %d tentative(s)\n", received_message[1]);
+    }
 	
-
-	else if (received_message[0] == CODE_CLIENT2_LOST_GAME)
-	{
-		printf("Le joueur 2 à échoué à trouvr votre mot !");
-		goto end_observer;
-	}
-
-	else if (received_message[0] == CODE_CLIENT2_LOST_TRY)
-	{
-		printf("Le joueur 2 à commit une erreur, il lui reste %d tentative(s)", received_message[1]);
-	}
-	
-	} else {
+	else {
 		// Translate the message that the server send
 		word_not_found = translate_message(received_message, word, letter);
 	}
