@@ -30,6 +30,10 @@
 #define MESSAGE_LEN 10 // = Maximal lenght of the messages
 #define MAX_WORD_SIZE 256 // = Maximal lenght of the word
 #define CODE_CLIENT_CHOOSE_WORD 214 // = Client choose the custom word
+#define CODE_CLIENT2_FOUND_WORD 216
+#define CODE_CLIENT2_LOST_GAME 217
+#define CODE_CLIENT2_FOUND_LETTER 218
+#define CODE_CLIENT2_LOST_TRY 219
 
 int main(int argc, char *argv[]){
 
@@ -94,6 +98,8 @@ int main(int argc, char *argv[]){
 
 	printf("Connexion au serveur %s:%d réussie!\n",ip_dest,port_dest);
 
+	client1_loop:
+	memset(received_message, 0, MESSAGE_LEN);
 	printf("En attente du serveur de jeu..\n");
 	// Get a message from the server
 	received_message = get_message_from_server(socket, MESSAGE_LEN);
@@ -109,6 +115,31 @@ int main(int argc, char *argv[]){
 		if (send = send_custom_word_to_server(socket, client_word, MESSAGE_LEN) == -1) {
 			perror("Envoi du message impossible");
 		}
+
+	else if (received_message[0] == CODE_CLIENT2_FOUND_LETTER)
+	{
+		printf("Le joueur 2 à trouvé la lettre: %c", received_message[1]);
+		goto client1_loop;
+	}
+
+	else if (received_message[0] == CODE_CLIENT2_FOUND_WORD)
+	{
+		printf("Le joueur 2 à deviné votre mot !");
+		goto end_observer;
+	}
+	
+
+	else if (received_message[0] == CODE_CLIENT2_LOST_GAME)
+	{
+		printf("Le joueur 2 à échoué à trouvr votre mot !");
+		goto end_observer;
+	}
+
+	else if (received_message[0] == CODE_CLIENT2_LOST_TRY)
+	{
+		printf("Le joueur 2 à commit une erreur, il lui reste %d tentative(s)", received_message[1]);
+	}
+	
 	} else {
 		// Translate the message that the server send
 		word_not_found = translate_message(received_message, word, letter);
@@ -195,6 +226,11 @@ int main(int argc, char *argv[]){
 		free(received_message);
 
 		// Close the socket and leave
+		close(socket);
+		return 0;
+
+	end_observer:
+
 		close(socket);
 		return 0;
 }
