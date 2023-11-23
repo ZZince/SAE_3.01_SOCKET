@@ -24,7 +24,7 @@
 #include "../client_functions.h"
 
 // Constant
-#define MAX_WORD_SIZE 256 // Maximum lenght of the word
+#define MAX_WORD_SIZE 50 // Maximum lenght of the word
 
 
 ////////////////////////////// FUNCTIONS ////////////////////////////////////////////////

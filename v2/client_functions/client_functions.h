@@ -14,6 +14,7 @@ char *select_word();
 // message_client.c
 int send_character_to_server(int socket, char character, int size);
 int send_word_to_server(int socket, char *word, int size);
+int send_custom_word_to_server(int socket, char *word, int size);
 char *get_message_from_server(int socket, int size);
 int translate_message(unsigned char *buffer, char *word, char character);
 

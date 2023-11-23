@@ -22,7 +22,7 @@
 #include <netinet/in.h>	// struct sockaddr_in
 #include <arpa/inet.h> // htons() and inet_aton() 
 
-#define MAX_WORD_SIZE 256 // = Maximum lenght of a word
+#define MAX_WORD_SIZE 50 // = Maximum lenght of a word
 
 // Depedencies
 #include "../client_functions.h"

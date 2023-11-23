@@ -29,6 +29,7 @@
 // Constant
 #define MESSAGE_LEN 10 // = Maximal lenght of the messages
 #define MAX_WORD_SIZE 256 // = Maximal lenght of the word
+#define CODE_CLIENT_CHOOSE_WORD 214 // = Client choose the custom word
 
 int main(int argc, char *argv[]){
 
@@ -93,6 +94,7 @@ int main(int argc, char *argv[]){
 
 	printf("Connexion au serveur %s:%d réussie!\n",ip_dest,port_dest);
 
+	printf("En attente du serveur de jeu..\n");
 	// Get a message from the server
 	received_message = get_message_from_server(socket, MESSAGE_LEN);
 	if (received_message == NULL) {
@@ -100,15 +102,36 @@ int main(int argc, char *argv[]){
 		exit(-1); // ERROR
 	}
 
-	// Translate the message that the server send
-	word_not_found = translate_message(received_message, word, letter);
+	// Client 1 Choose a custom word, client 2 have to find it
+	if (received_message[0] == CODE_CLIENT_CHOOSE_WORD) {
+		// Client choose the custom word of the game
+		client_word = select_word();
+		if (send = send_custom_word_to_server(socket, client_word, MESSAGE_LEN) == -1) {
+			perror("Envoi du message impossible");
+		}
+	} else {
+		// Translate the message that the server send
+		word_not_found = translate_message(received_message, word, letter);
+	}
 
 	memset(received_message, 0x00, MESSAGE_LEN); // refresh the message
 
 	// Game Loop
 	while(!word_not_found){
 
-		//choice = 'o';
+		// Get a message from the server (check if client can play or not)
+		received_message = get_message_from_server(socket, MESSAGE_LEN);
+		if (received_message == NULL) {
+			perror("Erreur lors de la réception du message");
+			exit(-1); // ERROR
+		}
+
+		// Translate the message that the server send
+		word_not_found = translate_message(received_message, word, letter);
+
+		if (word_not_found) {
+			goto end;
+		}
 
 		// Ask client what his action
 		printf("1: Send a letter\n2: Send the word\n");
@@ -153,25 +176,27 @@ int main(int argc, char *argv[]){
 		memset(received_message, 0x00, MESSAGE_LEN); // refresh the message
 	}
 
-	// If player have won (find the good word)
-	if (word_not_found == 1) {
-		printf("Le mot était : ");
-		for(int i = 0; i < 10; i++) {
-			printf("%c", client_word[i]);
+	end:
+
+		// If player have won (find the good word)
+		if (word_not_found == 1) {
+			printf("Le mot était : ");
+			for(int i = 0; i < 10; i++) {
+				printf("%c", client_word[i]);
+			}
+			printf("\n");
 		}
-		printf("\n");
-	}
 
-	if (word_not_found == 2) {
-		printf("Le mot était : SOCKET\n");
-	}
-	
-	// Free memory allocated
-	free(received_message);
+		if (word_not_found == 2) {
+			printf("Le mot était : SOCKET\n");
+		}
+		
+		// Free memory allocated
+		free(received_message);
 
-	// Close the socket and leave
-	close(socket);
-	return 0;
+		// Close the socket and leave
+		close(socket);
+		return 0;
 }
 
 

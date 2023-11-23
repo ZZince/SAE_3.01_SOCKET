@@ -24,7 +24,7 @@
 #include <stdbool.h> // type boolean
 
 
-// Constants
+// Constants (code between client and server)
 #define CODE_NUMBER_OF_LETTER 201 // Means that the server sends the number of letters in the word
 #define CODE_LETTER_RECEIVED 202 // Send letter validation code
 #define CODE_LETTER_ALREADY_SENT 203 // When player already sent the letter
@@ -35,6 +35,11 @@
 #define CODE_WORD_NOT_FOUND 208 // Word not find validation code
 #define CODE_PLAYER_LOST 209 // Player loose the game validation code
 #define CODE_PLAYER_WON 210 // Player win the game (he get all letters)
+#define CODE_OPPONENT_LOST 211 // Means that the opponent loose his game
+#define CODE_OPPONENT_WIN 212 // Means that the opponent win his game
+#define CODE_CLIENT_CAN_PLAY 213 // Means that the player can continue his game
+#define CODE_CLIENT_CHOOSE_WORD 214 // Means that the client have to choose the custom word
+#define CODE_CLIENT_SENT_WORD 215 // Means that the client sent the custom word to server
  
 
 
@@ -118,6 +123,35 @@ int send_word_to_server(int socket, char *word, int size) {
 }
 
 
+int send_custom_word_to_server (int socket, char *word, int size) {
+    unsigned char message[size]; // set in unsigned to allow values bigger than 127 in a bytes
+    int nb;
+
+    memset(message, 0x00, size); // Initialize message
+
+    message[0] = CODE_CLIENT_SENT_WORD;
+
+    for (int index = 0; index < size; index++) {
+        message[index + 1] = word[index];
+    }
+
+    // Try sending the message
+    switch(nb = write(socket, message, size)){
+		case -1 : 
+			perror("Erreur en écriture...");
+			close(socket); 
+			return -1; // ERROR
+		case 0 : // Socket is closed
+			fprintf(stderr, "La socket a été fermée par le serveur !\n\n");
+			return 0;
+		default: // message send successfuly
+			printf("Mot : %s envoyée! (%d octets)\n\n", word, nb);
+	}
+
+    return 0;
+}
+
+
 /* Allow a client to get a message from the server
     Parameters:
         socket [int]:
@@ -150,10 +184,6 @@ char *get_message_from_server(int socket, int size) {
 		    message[nb]='\0';
             // Show message
             printf("Message reçu du serveur (%d octets) : ", nb);
-            for(int i = 0; i < size; i++) {
-                printf("%d ", message[i]);
-            }
-            printf("\n");
 	}
 
 
@@ -221,6 +251,19 @@ int translate_message(unsigned char *buffer, char *word, char character) {
         case CODE_PLAYER_WON: // Player won the game (he gess all the letters)
             printf("Vous avez trouvé le bon mot\n");
             return 2;
+
+        case CODE_OPPONENT_LOST: // The opponent lost so you win
+            printf("Le joueur adverse a perdu sa partie, par conséquent vous gagné !\n");
+            return 2;
+
+        case CODE_OPPONENT_WIN: // The opponent win so you loose
+            printf("Le joueur adverse a trouvé le mot avant vous, par conséquent vous perdez...\n");
+            return 2;
+
+        case CODE_CLIENT_CAN_PLAY: // Game continue, client can play his turn
+            printf("C'est votre tour !\n");
+            return 0;
+
 
         default: // Message unrecognized
             printf("Message inconnu\n");
