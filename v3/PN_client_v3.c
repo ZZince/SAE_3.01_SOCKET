@@ -116,8 +116,6 @@ int main(int argc, char *argv[]){
 			perror("Envoi du message impossible");
 		}
 
-		goto client1_loop;
-	}
 	else if (received_message[0] == CODE_CLIENT2_FOUND_LETTER)
 	{
 		printf("Le joueur 2 à trouvé la lettre: %c", received_message[1]);
@@ -142,7 +140,7 @@ int main(int argc, char *argv[]){
 		printf("Le joueur 2 à commit une erreur, il lui reste %d tentative(s)", received_message[1]);
 	}
 	
-	else {
+	} else {
 		// Translate the message that the server send
 		word_not_found = translate_message(received_message, word, letter);
 	}
