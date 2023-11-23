@@ -18,7 +18,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-# include <ctype.h>   // get isDigit()
+#include <ctype.h>   // get isDigit()
 #include <string.h>	// memset()
 #include <netinet/in.h>	// struct sockaddr_in
 #include <arpa/inet.h> // htons() and inet_aton() 

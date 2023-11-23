@@ -1,3 +1,18 @@
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+/////																			//////
+/////		Author : Artu Florient												//////
+/////		Date : 16/11/2023													//////
+/////		Subject : Server main program										//////
+/////																			//////
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+
+/* This program aims to manage all the main logic of the server. */
+
+////////////////////////////// IMPORT ////////////////////////////////////////////////
+
+// Library
 #include <stdio.h>
 #include <string.h>
 #include <arpa/inet.h>
@@ -6,12 +21,14 @@
 #include "server_functions/connection_server.h"
 #include "server_functions/letter.h"
 
+// Constants
 #define MAX_CONNECTION 1
 #define MESSAGE_LEN 10
 #define ERROR_LEN 256
 #define TRY_ERROR 6
 #define NB_LETTERS_ALPHA 26
 
+// Code
 #define CODE_NUMBER_LETTER 201
 #define CODE_LETTER_RECEIVED 202
 #define CODE_LETTER_ALREADY_SENT 203
@@ -26,8 +43,10 @@
 #define CODE_NOT_A_LETTER 101
 #define CODE_CRITICAL_ERROR 199
 
+// Word client have to find
 #define WORD "SOCKET"
 
+// Errors constants
 #define ERROR_SOCKET "Error during socket creation: "
 #define ERROR_ACCEPTATION "Error during client acceptation: "
 #define ERROR_SENDING "Error during sending informations: "

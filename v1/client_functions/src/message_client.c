@@ -41,7 +41,7 @@
  
 
 
-// Depedencies
+// Dependencies
 #include "../client_functions.h"
 
 ////////////////////////////// FUNCTIONS ////////////////////////////////////////////////
@@ -49,7 +49,7 @@
 
 /* Allow a client to send a character to the server
     Parameter:
-        socket [int]:
+        socket [int]: the descriptor between client and server
         character [char]: The letter we send to the server
         size [int]: The maximum size (number of bytes) of the message 
 
@@ -64,16 +64,6 @@ int send_character_to_server(int socket, char character, int size) {
 
     message[0] = CODE_LETTER_RECEIVED; // 202
     message[1] = character;
-
-    
-
-	// Show message in decimal  ////////////////////
-    //printf("Message formé : ");
-    //for (int i = 0; i < size; ++i) {
-    //    printf("%d ", message[i]);
-    //}
-    //printf("\n");
-
 
 	// Try sending the message
     switch(nb = write(socket, message, size)){
@@ -91,7 +81,15 @@ int send_character_to_server(int socket, char character, int size) {
     return 0;
 }
 
+/* Allow a client to send a word to the server
+    Parameter:
+        socket [int]: the descriptor between client and server
+        character [char]: The word we send to the server
+        size [int]: The maximum size (number of bytes) of the message 
 
+    Return:
+        - [int]: 0 if resolved, -1 if error
+*/
 int send_word_to_server(int socket, char *word, int size) {
     unsigned char message[size]; // set in unsigned to allow values bigger than 127 in a bytes
     int nb;
