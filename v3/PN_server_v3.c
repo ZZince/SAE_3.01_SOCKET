@@ -307,6 +307,7 @@ int main(int argc, char *argv[]){
                     break; //Leave CODE_LETTER_RECEIVED and switch statements
 
                 case CODE_CLIENT_SENT_A_WORD: //Client sent a word
+                    memset(word_received, 0x00, MESSAGE_LEN);
                     extract_word(word_received, client_message); //Recovery word tried without code
                     if (strcmp(word_received, word) == 0){ // Client sent good word
                         server_message[0] = CODE_CLIENT_FOUND_WORD; // Client won
@@ -356,6 +357,7 @@ int main(int argc, char *argv[]){
 
                             memset(server_message, 0, MESSAGE_LEN);
                             server_message[0] = CODE_CLIENT2_LOST_TRY;
+                            server_message[1] = try_error_client;
 
                             if ((send(socket_client1[0], server_message, MESSAGE_LEN, 0)) <= 0){
                                 strcpy(error_message, ERROR_SENDING);
