@@ -54,7 +54,10 @@ char select_letter() {
     return toupper(character); // Return the character in upper format
 }
 
-
+/* Made the client select a word
+    Return:
+        - [char*]: The word choosed by the client 
+*/
 char *select_word() {
     char *word = (char *)malloc(MAX_WORD_SIZE * sizeof(char));;
 

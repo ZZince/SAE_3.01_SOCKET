@@ -67,6 +67,12 @@ void show_word_in_cmd(char *word) {
         printf("\n\n");
 }
 
+/* Add character in the display of the word when client found it
+    Parameters:
+        buffer [unsigned char*]: the message from the server
+        word [unsigned char*]: the word client have to find
+        character [char]: the letter the client found
+*/
 void character_is_good( unsigned char *buffer, unsigned char *word, char character) {
     int index = 1;
     int letter_position = buffer[index];

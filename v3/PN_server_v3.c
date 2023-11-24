@@ -1,3 +1,18 @@
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+/////																			//////
+/////		Author : Artu Florient												//////
+/////		Date : 24/11/2023													//////
+/////		Subject : Server main program										//////
+/////																			//////
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+
+/* This program aims to manage all the main logic of the server. */
+
+////////////////////////////// IMPORT ////////////////////////////////////////////////
+
+// Library
 #include <stdio.h>
 #include <string.h>
 #include <arpa/inet.h>
@@ -6,12 +21,14 @@
 #include "server_functions/connection_server.h"
 #include "server_functions/letter.h"
 
+// Constants
 #define MAX_CONNECTION 2
 #define MESSAGE_LEN 50
 #define ERROR_LEN 256
 #define TRY_ERROR 6
 #define NB_LETTERS_ALPHA 26
 
+// Codes
 #define CODE_NUMBER_LETTER 201
 #define CODE_LETTER_RECEIVED 202
 #define CODE_LETTER_ALREADY_SENT 203
@@ -35,6 +52,7 @@
 #define CODE_NOT_A_LETTER 101
 #define CODE_CRITICAL_ERROR 199
 
+// Errors
 #define ERROR_SOCKET "Error during socket creation: "
 #define ERROR_ACCEPTATION "Error during client acceptation: "
 #define ERROR_SENDING "Error during sending informations: "
@@ -42,10 +60,6 @@
 #define ERROR_WRONG_CODE_RECEIVED "Unexpected code received"
 #define ERROR_CLOSING_CLIENT_SOCKET "Error during closing client socket: "
 
-/*
-Compilation:
-gcc -o Server.run PN_server_v3.c server_functions/src/letter.c server_functions/src/connection_server.c -I server_functions
-*/
 
 int main(int argc, char *argv[]){
 
@@ -356,7 +370,7 @@ int main(int argc, char *argv[]){
                             }
 
                             memset(server_message, 0, MESSAGE_LEN);
-                            server_message[0] = CODE_CLIENT2_LOST_TRY;
+                            server_message[0] = CODE_CLIENT2_LOST_GAME;
                             server_message[1] = try_error_client;
 
                             if ((send(socket_client1[0], server_message, MESSAGE_LEN, 0)) <= 0){
@@ -406,3 +420,8 @@ int main(int argc, char *argv[]){
         goto setup_game;  
     }
 }
+
+/*
+Compilation:
+gcc -o Server.run PN_server_v3.c server_functions/src/letter.c server_functions/src/connection_server.c -I server_functions
+*/
