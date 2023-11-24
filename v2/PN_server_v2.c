@@ -104,6 +104,7 @@ int main(int argc, char *argv[]){
             printf("Sockets created\n");
 
             // Buffers reset
+            try_error_client = TRY_ERROR;
             memset(error_message, 0x00, ERROR_LEN);
             memset(client_message, 0x00, MESSAGE_LEN);
             memset(server_message, 0x00, MESSAGE_LEN);
@@ -356,7 +357,7 @@ int main(int argc, char *argv[]){
                             }
 
                             memset(server_message, 0, MESSAGE_LEN);
-                            server_message[0] = CODE_CLIENT2_LOST_GAME;
+                            server_message[0] = CODE_CLIENT2_LOST_TRY;
 
                             if ((send(socket_client1[0], server_message, MESSAGE_LEN, 0)) <= 0){
                                 strcpy(error_message, ERROR_SENDING);
